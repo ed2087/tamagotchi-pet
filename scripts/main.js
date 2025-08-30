@@ -1,4 +1,4 @@
-// Main game controller
+// Main game controller - Enhanced with contextual feedback
 class TamagotchiGame {
     constructor() {
         this.creature = null;
@@ -17,49 +17,48 @@ class TamagotchiGame {
     async init() {
         console.log('Initializing Tamagotchi Game...');
         
-        // Initialize storage manager first
         this.storageManager = new StorageManager();
         await this.storageManager.init();
         
-        // Initialize core systems
         this.creature = new Creature();
         this.needsSystem = new NeedsSystem(this.creature);
         this.languageLearning = new LanguageLearning(this.creature);
         this.audioSystem = new AudioSystem();
         this.interactionHandler = new InteractionHandler(this.creature, this.languageLearning);
         
-        // Load saved data or create new creature
         await this.loadGame();
-        
-        // Set up UI event listeners
         this.setupUIEventListeners();
-        
-        // Start game loop
         this.startGameLoop();
         
         console.log('Tamagotchi Game initialized successfully!');
     }
 
     setupUIEventListeners() {
-        // Action buttons
+        // Action buttons with context tracking
         document.getElementById('feedBtn').addEventListener('click', () => {
-            this.needsSystem.feed();
-            this.creature.addHappiness(5);
+            const success = this.needsSystem.feed();
+            this.languageLearning.recordUserReaction('feed', Date.now(), success);
+            
+            if (success) {
+                this.creature.addHappiness(5);
+            }
         });
 
         document.getElementById('playBtn').addEventListener('click', () => {
-            this.needsSystem.play();
+            const success = this.needsSystem.play();
+            this.languageLearning.recordUserReaction('play', Date.now(), success);
         });
 
         document.getElementById('sleepBtn').addEventListener('click', () => {
-            this.needsSystem.toggleSleep();
+            const success = this.needsSystem.toggleSleep();
+            this.languageLearning.recordUserReaction('sleep', Date.now(), success);
         });
 
         document.getElementById('medicineBtn').addEventListener('click', () => {
-            this.needsSystem.giveMedicine();
+            const success = this.needsSystem.giveMedicine();
+            this.languageLearning.recordUserReaction('medicine', Date.now(), success);
         });
 
-        // Chat input
         document.getElementById('sendButton').addEventListener('click', () => {
             this.handleTextInput();
         });
@@ -70,7 +69,6 @@ class TamagotchiGame {
             }
         });
 
-        // Voice input
         const voiceBtn = document.getElementById('voiceButton');
         voiceBtn.addEventListener('mousedown', () => {
             this.interactionHandler.startVoiceRecording();
@@ -84,21 +82,14 @@ class TamagotchiGame {
             this.interactionHandler.stopVoiceRecording();
         });
 
-        // Creature interactions
         document.getElementById('creatureStage').addEventListener('click', (e) => {
             this.interactionHandler.handleCreatureClick(e);
         });
 
-        document.getElementById('creatureStage').addEventListener('mousemove', (e) => {
-            this.interactionHandler.handleCreatureHover(e);
-        });
-
-        // Window events
         window.addEventListener('beforeunload', () => {
             this.saveGame();
         });
 
-        // Auto-save every 30 seconds
         setInterval(() => {
             this.saveGame();
         }, 30000);
@@ -109,8 +100,9 @@ class TamagotchiGame {
         const message = input.value.trim();
         
         if (message) {
-            this.languageLearning.processUserInput(message, 'text');
             this.addChatMessage('You', message, 'user');
+            this.languageLearning.processUserInput(message, 'text');
+            this.interactionHandler.recordUserAttention();
             input.value = '';
         }
     }
@@ -140,7 +132,7 @@ class TamagotchiGame {
         this.isGameRunning = true;
         this.gameLoop = setInterval(() => {
             this.update();
-        }, 1000); // Update every second
+        }, 1000);
     }
 
     stopGameLoop() {
@@ -152,37 +144,26 @@ class TamagotchiGame {
     }
 
     update() {
-        // Update creature needs (hunger decreases over time, etc.)
         this.needsSystem.update();
-        
-        // Update creature age
         this.creature.updateAge();
-        
-        // Update UI
+        this.languageLearning.update(Date.now());
         this.updateUI();
         
-        // Check for evolution
-        this.languageLearning.checkEvolution();
-        
-        // Random creature actions
-        if (Math.random() < 0.05) { // 5% chance each second
+        if (Math.random() < 0.05) {
             this.creature.performRandomAction();
         }
     }
 
     updateUI() {
-        // Update status bars
         this.updateStatusBar('hunger', this.creature.hunger);
         this.updateStatusBar('happiness', this.creature.happiness);
         this.updateStatusBar('health', this.creature.health);
         this.updateStatusBar('energy', this.creature.energy);
         
-        // Update creature info
-        document.getElementById('creatureAge').textContent = Math.floor(this.creature.age);
-        document.getElementById('evolutionStage').textContent = this.languageLearning.getStageNameInE();
+        document.getElementById('creatureAge').textContent = Math.floor(this.creature.age / 24);
+        document.getElementById('evolutionStage').textContent = this.languageLearning.getStageName();
         document.getElementById('creatureName').textContent = this.creature.name || 'Unnamed';
         
-        // Update creature appearance based on mood
         this.creature.updateAppearance();
     }
 
@@ -193,7 +174,6 @@ class TamagotchiGame {
         bar.style.width = `${Math.max(0, Math.min(100, value))}%`;
         valueSpan.textContent = Math.round(value);
         
-        // Add warning classes for low values
         bar.classList.remove('low', 'critical');
         if (value < 30) {
             bar.classList.add('low');
@@ -222,15 +202,12 @@ class TamagotchiGame {
             this.languageLearning.deserialize(savedData.language);
             console.log('Game loaded!');
         } else {
-            // Create new creature
             this.creature.initializeNew();
-            this.languageLearning.initializeNew();
             console.log('New game started!');
         }
     }
 }
 
-// Initialize game when page loads
 document.addEventListener('DOMContentLoaded', () => {
     window.tamagotchiGame = new TamagotchiGame();
 });

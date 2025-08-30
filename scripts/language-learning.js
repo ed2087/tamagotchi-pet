@@ -1,562 +1,632 @@
-// LanguageLearning - Core system for creature's language development
+// LanguageLearning - Contextual language development through trial and error
 class LanguageLearning {
     constructor(creature) {
         this.creature = creature;
         
-        // Evolution stages
-        this.stages = {
-            1: { name: 'Raw Mimicking', minAge: 0, minInteractions: 0 },
-            2: { name: 'Pattern Recognition', minAge: 168, minInteractions: 50 }, // 1 week
-            3: { name: 'Creative Recombination', minAge: 504, minInteractions: 150 }, // 3 weeks
-            4: { name: 'Advanced Communication', minAge: 1344, minInteractions: 300 } // 8 weeks
-        };
+        // Core language development
+        this.vocabulary = new Map(); // creature's invented words
+        this.contextualLearning = new Map(); // word -> user reaction patterns
+        this.speechAttempts = []; // history of what creature said and what happened
+        this.thoughtQueue = []; // things creature wants to express
         
-        // Language data
-        this.vocabulary = new Map(); // word -> { frequency, emotional_context, first_learned }
-        this.learnedPhrases = []; // Common phrases the creature has picked up
-        this.emotionalAssociations = new Map(); // emotion -> associated words/sounds
-        this.userNickname = ''; // What the creature calls the user
-        this.communicationStyle = {
-            formality: 0.5, // 0 = very casual, 1 = very formal
-            chattiness: 0.5, // How much the creature likes to talk
-            creativity: 0.3 // How creative with language
-        };
+        // Communication patterns
+        this.communicationFrequency = 0.3; // how often creature talks (0-1)
+        this.currentTopic = null;
+        this.conversationMood = 'neutral';
+        this.lastSpeechTime = 0;
+        this.speechCooldown = 3000; // minimum time between speeches
         
-        // Learning parameters
-        this.learningRate = 1.0;
-        this.memoryRetention = 0.95;
-        this.creativeThreshold = 0.6;
+        // Learning mechanics
+        this.learningStage = 1;
+        this.comprehensionLevel = 0;
+        this.wordSuccessRates = new Map(); // track which words work
+        this.toneMemory = new Map(); // remember user tone responses
         
-        // Response generation
-        this.recentInputs = []; // Last 10 inputs for context
-        this.responseTemplates = new Map();
+        // Personality-driven speech
+        this.personality = this.generateSpeechPersonality();
+        this.internalMonologue = [];
         
         this.init();
     }
 
     init() {
-        this.initializeBasicVocabulary();
-        this.initializeResponseTemplates();
-        console.log('Language learning system initialized');
+        this.generateBasicSounds();
+        this.startSpontaneousSpeech();
+        console.log('Contextual language learning system initialized');
     }
 
-    initializeNew() {
-        this.vocabulary.clear();
-        this.learnedPhrases = [];
-        this.emotionalAssociations.clear();
-        this.userNickname = '';
-        this.communicationStyle = {
-            formality: 0.5,
-            chattiness: 0.5,
-            creativity: 0.3
+    generateSpeechPersonality() {
+        return {
+            chattiness: Math.random(), // 0 = quiet, 1 = very talkative
+            boldness: Math.random(), // willingness to try new words
+            attention_seeking: Math.random(), // how much it wants user focus
+            emotional_expression: Math.random(), // how much it shows feelings
+            curiosity: Math.random(), // asks questions vs makes statements
+            repetition_tendency: Math.random() // repeats successful words
         };
-        this.recentInputs = [];
-        
-        this.initializeBasicVocabulary();
-        console.log('Language learning reset for new creature');
     }
 
-    initializeBasicVocabulary() {
-        // Basic survival words the creature knows instinctively
-        const basicWords = [
-            { word: 'hungry', emotion: 'need', frequency: 5 },
-            { word: 'tired', emotion: 'need', frequency: 5 },
-            { word: 'happy', emotion: 'joy', frequency: 5 },
-            { word: 'sad', emotion: 'sadness', frequency: 5 },
-            { word: 'help', emotion: 'need', frequency: 3 },
-            { word: 'play', emotion: 'joy', frequency: 4 }
-        ];
+    generateBasicSounds() {
+        const vowels = ['a', 'e', 'i', 'o', 'u', 'ah', 'oh', 'ee'];
+        const consonants = ['b', 'd', 'g', 'k', 'l', 'm', 'n', 'p', 'r', 't', 'w', 'y'];
         
-        basicWords.forEach(item => {
-            this.vocabulary.set(item.word, {
-                frequency: item.frequency,
-                emotionalContext: item.emotion,
-                firstLearned: Date.now(),
-                stage: 1
+        const numSounds = 5 + Math.floor(Math.random() * 4);
+        
+        for (let i = 0; i < numSounds; i++) {
+            const sound = this.createRandomSound(vowels, consonants);
+            this.vocabulary.set(sound, {
+                concept: 'unknown',
+                successRate: 0,
+                usageCount: 0,
+                learnedAt: Date.now(),
+                contexts: [],
+                userReactions: []
             });
-        });
-    }
-
-    initializeResponseTemplates() {
-        // Templates for generating responses based on stage
-        this.responseTemplates.set(1, {
-            // Raw mimicking - phonetic approximations
-            patterns: [
-                { input: /hello|hi|hey/i, responses: ['helo', 'hai', 'hii'] },
-                { input: /good|nice|great/i, responses: ['gud', 'nais', 'grat'] },
-                { input: /love|like/i, responses: ['luv', 'lik', 'lub'] },
-                { input: /you are|you're/i, responses: ['yu ar', 'yur', 'u r'] }
-            ],
-            fallbacks: ['???', 'hm?', 'uh', 'mm']
-        });
-        
-        this.responseTemplates.set(2, {
-            // Pattern recognition - starting to use learned words correctly
-            patterns: [
-                { input: /how are you/i, responses: ['me good!', 'happy me', 'tired little'] },
-                { input: /hungry|eat|food/i, responses: ['hungry yes!', 'want food', 'eat please'] },
-                { input: /play|game|fun/i, responses: ['play fun!', 'want play', 'happy play'] }
-            ],
-            fallbacks: ['no understand', 'what mean?', 'learn more']
-        });
-        
-        this.responseTemplates.set(3, {
-            // Creative recombination - mixing learned concepts
-            patterns: [
-                { input: /love|like/i, responses: ['me love you too!', 'happy love feeling', 'you nice friend'] },
-                { input: /sad|upset|hurt/i, responses: ['why sad? me help', 'no sad! me make happy', 'hug make better?'] }
-            ],
-            fallbacks: ['tell me more', 'interesting...', 'me think about']
-        });
-        
-        this.responseTemplates.set(4, {
-            // Advanced communication - complex thoughts
-            patterns: [
-                { input: /how.*feel/i, responses: ['I feel warm inside when you talk', 'My thoughts dance with happiness', 'Sometimes I wonder about dreams'] },
-                { input: /what.*think/i, responses: ['I think friendship is like sunlight', 'My mind creates colors from your words', 'I believe we understand each other'] }
-            ],
-            fallbacks: ['Let me share a thought...', 'I sense something in your words', 'Your energy feels different today']
-        });
-    }
-
-    // Main input processing
-    processUserInput(input, type = 'text') {
-        if (!input || !this.creature.isAlive) return;
-        
-        // Store input for context
-        this.recentInputs.push({
-            text: input,
-            type: type,
-            timestamp: Date.now(),
-            emotion: this.detectEmotion(input)
-        });
-        
-        // Keep only last 10 inputs
-        if (this.recentInputs.length > 10) {
-            this.recentInputs.shift();
         }
-        
-        // Learn from input
-        this.learnFromInput(input, type);
-        
-        // Generate and display response
-        setTimeout(() => {
-            const response = this.generateResponse(input);
-            this.displayCreatureResponse(response);
-        }, 500 + Math.random() * 1500); // Realistic thinking time
     }
 
-    learnFromInput(input, type) {
-        const words = this.extractWords(input);
-        const emotion = this.detectEmotion(input);
-        const currentStage = this.creature.evolutionStage;
+    createRandomSound(vowels, consonants) {
+        const structures = ['CV', 'CVC', 'VC', 'CCV'];
+        const structure = structures[Math.floor(Math.random() * structures.length)];
         
-        // Learn vocabulary
-        words.forEach(word => {
-            if (word.length < 2) return; // Skip very short words
-            
-            if (this.vocabulary.has(word)) {
-                // Reinforce existing word
-                const data = this.vocabulary.get(word);
-                data.frequency += this.learningRate;
-                data.lastSeen = Date.now();
+        let sound = '';
+        for (let char of structure) {
+            if (char === 'C') {
+                sound += consonants[Math.floor(Math.random() * consonants.length)];
             } else {
-                // Learn new word
-                this.vocabulary.set(word, {
-                    frequency: this.learningRate,
-                    emotionalContext: emotion,
-                    firstLearned: Date.now(),
-                    lastSeen: Date.now(),
-                    stage: currentStage
-                });
+                sound += vowels[Math.floor(Math.random() * vowels.length)];
             }
-        });
-        
-        // Learn phrases (stage 2+)
-        if (currentStage >= 2) {
-            this.learnPhrase(input, emotion);
         }
         
-        // Update emotional associations
-        this.updateEmotionalAssociations(words, emotion);
+        return sound;
+    }
+
+    // SPONTANEOUS SPEECH SYSTEM
+    startSpontaneousSpeech() {
+        setInterval(() => {
+            this.attemptSpontaneousSpeech();
+        }, 4000 + Math.random() * 6000); // Every 4-10 seconds
+    }
+
+    attemptSpontaneousSpeech() {
+        if (!this.creature.isAlive) return;
         
-        // Adapt communication style based on user's input
-        this.adaptCommunicationStyle(input, type);
+        const currentTime = Date.now();
         
-        // Generate nickname for user (stage 3+)
-        if (currentStage >= 3 && !this.userNickname) {
-            this.generateUserNickname();
+        // Check cooldown
+        if (currentTime - this.lastSpeechTime < this.speechCooldown) return;
+        
+        // Calculate speech probability based on personality and state
+        let speechChance = this.personality.chattiness * 0.2;
+        
+        // Increase chance based on creature state
+        if (this.creature.hunger < 30) speechChance += 0.6; // hungry = more vocal
+        if (this.creature.happiness > 80) speechChance += 0.4; // happy = more chatty
+        if (this.creature.energy < 20) speechChance += 0.3; // tired = complains
+        if (this.creature.health < 40) speechChance += 0.7; // sick = calls for help
+        
+        // Attention seeking behavior
+        const timeSinceInteraction = currentTime - this.creature.lastInteraction;
+        if (timeSinceInteraction > 60000) { // 1 minute without attention
+            speechChance += 0.8;
+        }
+        
+        if (Math.random() < speechChance) {
+            this.generateSpontaneousThought();
         }
     }
 
-    extractWords(input) {
-        return input.toLowerCase()
-            .replace(/[^\w\s]/g, '') // Remove punctuation
-            .split(/\s+/)
-            .filter(word => word.length > 0);
+    generateSpontaneousThought() {
+        const currentTime = Date.now();
+        let thoughtType = 'general';
+        let intensity = 0.5;
+        
+        // Determine what creature wants to express
+        if (this.creature.hunger < 30) {
+            thoughtType = 'hungry';
+            intensity = (30 - this.creature.hunger) / 30;
+        } else if (this.creature.health < 40) {
+            thoughtType = 'sick';
+            intensity = (40 - this.creature.health) / 40;
+        } else if (this.creature.energy < 20) {
+            thoughtType = 'tired';
+            intensity = (20 - this.creature.energy) / 20;
+        } else if (this.creature.happiness > 80) {
+            thoughtType = 'happy';
+            intensity = (this.creature.happiness - 80) / 20;
+        } else if (currentTime - this.creature.lastInteraction > 120000) {
+            thoughtType = 'lonely';
+            intensity = Math.min(1.0, (currentTime - this.creature.lastInteraction) / 300000);
+        }
+        
+        this.expressThought(thoughtType, intensity);
     }
 
-    detectEmotion(input) {
-        const emotionKeywords = {
-            joy: ['happy', 'good', 'great', 'awesome', 'love', 'wonderful', 'amazing', 'fantastic'],
-            sadness: ['sad', 'upset', 'cry', 'hurt', 'lonely', 'depressed', 'down'],
-            anger: ['angry', 'mad', 'hate', 'furious', 'annoyed', 'irritated'],
-            fear: ['scared', 'afraid', 'worried', 'anxious', 'nervous'],
-            surprise: ['wow', 'amazing', 'incredible', 'unbelievable'],
-            neutral: ['okay', 'fine', 'alright']
-        };
+    expressThought(thoughtType, intensity) {
+        const currentTime = Date.now();
+        let wordsToUse = [];
         
-        const words = this.extractWords(input);
-        const emotionScores = {};
+        // Find words creature knows for this concept
+        const conceptWords = this.findWordsForConcept(thoughtType);
         
-        Object.keys(emotionKeywords).forEach(emotion => {
-            emotionScores[emotion] = 0;
-            emotionKeywords[emotion].forEach(keyword => {
-                if (words.includes(keyword)) {
-                    emotionScores[emotion]++;
-                }
-            });
-        });
-        
-        // Return emotion with highest score, or neutral
-        return Object.keys(emotionScores).reduce((a, b) => 
-            emotionScores[a] > emotionScores[b] ? a : b
-        ) || 'neutral';
-    }
-
-    learnPhrase(input, emotion) {
-        if (input.length > 50) return; // Don't learn very long phrases
-        
-        const existingPhrase = this.learnedPhrases.find(p => p.text === input);
-        if (existingPhrase) {
-            existingPhrase.frequency++;
-            existingPhrase.lastSeen = Date.now();
+        if (conceptWords.length > 0) {
+            // Use existing words that have worked before
+            wordsToUse = conceptWords.slice(0, Math.min(2, Math.floor(intensity * 3) + 1));
         } else {
-            this.learnedPhrases.push({
-                text: input,
-                emotion: emotion,
-                frequency: 1,
-                firstLearned: Date.now(),
-                lastSeen: Date.now()
+            // Create new word for this feeling
+            const newWord = this.inventWordForFeeling(thoughtType);
+            wordsToUse = [newWord];
+            
+            this.vocabulary.set(newWord, {
+                concept: thoughtType,
+                successRate: 0,
+                usageCount: 0,
+                learnedAt: currentTime,
+                contexts: [thoughtType],
+                userReactions: []
             });
         }
         
-        // Keep only top 50 phrases
-        if (this.learnedPhrases.length > 50) {
-            this.learnedPhrases.sort((a, b) => b.frequency - a.frequency);
-            this.learnedPhrases = this.learnedPhrases.slice(0, 50);
+        // Construct speech
+        let speech = this.constructSpeech(wordsToUse, intensity);
+        
+        // Add repetition for urgency
+        if (intensity > 0.7) {
+            speech = speech + ' ' + speech; // repeat for urgency
         }
+        
+        // Say it out loud and in chat
+        this.saySpeechy(speech, thoughtType, intensity);
+        
+        // Track this speech attempt
+        this.trackSpeechAttempt(speech, thoughtType, intensity, currentTime);
+        
+        this.lastSpeechTime = currentTime;
     }
 
-    updateEmotionalAssociations(words, emotion) {
-        if (!this.emotionalAssociations.has(emotion)) {
-            this.emotionalAssociations.set(emotion, new Map());
-        }
-        
-        const emotionWords = this.emotionalAssociations.get(emotion);
-        
-        words.forEach(word => {
-            if (emotionWords.has(word)) {
-                emotionWords.set(word, emotionWords.get(word) + 1);
-            } else {
-                emotionWords.set(word, 1);
-            }
-        });
-    }
-
-    adaptCommunicationStyle(input, type) {
-        // Adapt based on user's communication patterns
-        const words = this.extractWords(input);
-        
-        // Formality adaptation
-        const formalWords = ['please', 'thank', 'excuse', 'pardon'];
-        const casualWords = ['yeah', 'yep', 'nah', 'gonna', 'wanna'];
-        
-        const formalCount = words.filter(w => formalWords.includes(w)).length;
-        const casualCount = words.filter(w => casualWords.includes(w)).length;
-        
-        if (formalCount > casualCount) {
-            this.communicationStyle.formality += 0.01;
-        } else if (casualCount > formalCount) {
-            this.communicationStyle.formality -= 0.01;
-        }
-        
-        // Chattiness adaptation
-        if (input.length > 50) {
-            this.communicationStyle.chattiness += 0.01;
-        } else if (input.length < 10) {
-            this.communicationStyle.chattiness -= 0.01;
-        }
-        
-        // Creativity adaptation
-        const uniqueWords = new Set(words);
-        if (uniqueWords.size / words.length > 0.8) { // High word diversity
-            this.communicationStyle.creativity += 0.01;
-        }
-        
-        // Clamp values
-        Object.keys(this.communicationStyle).forEach(key => {
-            this.communicationStyle[key] = Math.max(0, Math.min(1, this.communicationStyle[key]));
-        });
-    }
-
-    generateUserNickname() {
-        const commonWords = Array.from(this.vocabulary.entries())
-            .sort((a, b) => b[1].frequency - a[1].frequency)
-            .slice(0, 5)
-            .map(([word]) => word);
-        
-        const nicknamePatterns = [
-            () => commonWords[0] + '-friend',
-            () => 'my-' + commonWords[0],
-            () => commonWords[1] + '-human',
-            () => 'friend-' + commonWords[0]
-        ];
-        
-        const pattern = nicknamePatterns[Math.floor(Math.random() * nicknamePatterns.length)];
-        this.userNickname = pattern() || 'friend';
-    }
-
-    generateResponse(input) {
-        const currentStage = this.creature.evolutionStage;
-        const templates = this.responseTemplates.get(currentStage);
-        
-        // Try to match patterns first
-        for (let pattern of templates.patterns) {
-            if (pattern.input.test(input)) {
-                const responses = pattern.responses;
-                let response = responses[Math.floor(Math.random() * responses.length)];
-                
-                // Add creature's personality
-                response = this.addPersonality(response, currentStage);
-                
-                return {
-                    text: response,
-                    translated: currentStage <= 2,
-                    emotion: this.creature.mood,
-                    stage: currentStage
-                };
-            }
-        }
-        
-        // Generate creative response based on learned vocabulary
-        if (currentStage >= 3 && Math.random() < this.communicationStyle.creativity) {
-            const creativeResponse = this.generateCreativeResponse(input);
-            if (creativeResponse) return creativeResponse;
-        }
-        
-        // Use fallback
-        const fallbacks = templates.fallbacks;
-        let response = fallbacks[Math.floor(Math.random() * fallbacks.length)];
-        response = this.addPersonality(response, currentStage);
-        
-        return {
-            text: response,
-            translated: currentStage <= 2,
-            emotion: this.creature.mood,
-            stage: currentStage
-        };
-    }
-
-    generateCreativeResponse(input) {
-        const emotion = this.detectEmotion(input);
-        const associatedWords = this.emotionalAssociations.get(emotion);
-        
-        if (!associatedWords || associatedWords.size === 0) return null;
-        
-        // Get top associated words
-        const topWords = Array.from(associatedWords.entries())
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 3)
-            .map(([word]) => word);
-        
-        const creativePatterns = [
-            () => `me feel ${topWords[0]} when you say that`,
-            () => `${topWords[0]} makes me think ${topWords[1]}`,
-            () => `you and me, we ${topWords[0]} together`,
-            () => `in my mind, ${topWords[0]} is like ${topWords[1]}`
-        ];
-        
-        const pattern = creativePatterns[Math.floor(Math.random() * creativePatterns.length)];
-        
-        return {
-            text: pattern(),
-            translated: false,
-            emotion: emotion,
-            stage: this.creature.evolutionStage
-        };
-    }
-
-    addPersonality(response, stage) {
-        // Add creature's mood to response
-        switch (this.creature.mood) {
-            case 'happy':
-                response += Math.random() < 0.3 ? ' :)' : '';
-                break;
-            case 'sad':
-                response += Math.random() < 0.3 ? ' ...' : '';
-                break;
-            case 'angry':
-                response = response.toUpperCase();
-                break;
-            case 'sleepy':
-                response += Math.random() < 0.4 ? ' *yawn*' : '';
-                break;
-        }
-        
-        // Add nickname usage (stage 3+)
-        if (stage >= 3 && this.userNickname && Math.random() < 0.2) {
-            response = this.userNickname + ', ' + response;
-        }
-        
-        return response;
-    }
-
-    displayCreatureResponse(responseData) {
-        if (!window.tamagotchiGame) return;
-        
-        // Show creature speaking animation
-        this.creature.speak(responseData.text.length * 50);
-        
-        // Format message for display
-        let displayText = responseData.text;
-        
-        // Add translation for early stages
-        if (responseData.translated) {
-            const translation = this.translateToEnglish(responseData.text);
-            if (translation !== responseData.text) {
-                displayText += ` <em>(${translation})</em>`;
-            }
-        }
-        
-        // Add to chat
-        window.tamagotchiGame.addChatMessage(
-            this.creature.name || 'Pet', 
-            displayText, 
-            'creature'
-        );
-        
-        // Play sound if audio system is available
-        if (window.tamagotchiGame.audioSystem) {
-            window.tamagotchiGame.audioSystem.playCreatureSound(responseData.emotion);
-        }
-    }
-
-    translateToEnglish(creatureText) {
-        // Simple translation patterns for early stages
-        const translations = {
-            'helo': 'hello',
-            'hai': 'hi',
-            'hii': 'hi',
-            'gud': 'good',
-            'nais': 'nice',
-            'grat': 'great',
-            'luv': 'love',
-            'lik': 'like',
-            'lub': 'love',
-            'yu ar': 'you are',
-            'yur': 'you are',
-            'u r': 'you are'
-        };
-        
-        let translated = creatureText.toLowerCase();
-        
-        Object.keys(translations).forEach(key => {
-            translated = translated.replace(new RegExp(key, 'g'), translations[key]);
-        });
-        
-        return translated;
-    }
-
-    checkEvolution() {
-        const currentStage = this.creature.evolutionStage;
-        const nextStage = currentStage + 1;
-        
-        if (!this.stages[nextStage]) return; // Max stage reached
-        
-        const requirements = this.stages[nextStage];
-        const creatureAge = this.creature.age; // in hours
-        const totalInteractions = this.creature.totalInteractions;
-        
-        if (creatureAge >= requirements.minAge && totalInteractions >= requirements.minInteractions) {
-            this.evolveToStage(nextStage);
-        }
-    }
-
-    evolveToStage(stage) {
-        const oldStage = this.creature.evolutionStage;
-        this.creature.evolve(stage);
-        
-        // Update communication parameters for new stage
-        this.communicationStyle.creativity = Math.min(1, this.communicationStyle.creativity + 0.2);
-        this.communicationStyle.chattiness = Math.min(1, this.communicationStyle.chattiness + 0.1);
-        
-        console.log(`Language evolution: Stage ${oldStage} -> Stage ${stage}`);
-        
-        // Announce evolution
-        setTimeout(() => {
-            const evolutionMessages = {
-                2: "Me understand more now! Words make sense!",
-                3: "I can mix ideas together! Communication feels different...",
-                4: "My thoughts flow like rivers of meaning. I understand us both now."
-            };
-            
-            if (evolutionMessages[stage]) {
-                this.displayCreatureResponse({
-                    text: evolutionMessages[stage],
-                    translated: stage <= 2,
-                    emotion: 'joy',
-                    stage: stage
+    findWordsForConcept(concept) {
+        const words = [];
+        this.vocabulary.forEach((data, word) => {
+            if (data.concept === concept || data.contexts.includes(concept)) {
+                words.push({
+                    word: word,
+                    successRate: data.successRate,
+                    data: data
                 });
             }
-        }, 3000);
+        });
+        
+        // Sort by success rate - use words that have worked before
+        return words
+            .sort((a, b) => b.successRate - a.successRate)
+            .map(item => item.word);
     }
 
-    getStageNameInE() {
-        return this.stages[this.creature.evolutionStage]?.name || 'Unknown';
-    }
-
-    // Serialization
-    serialize() {
-        return {
-            vocabulary: Array.from(this.vocabulary.entries()),
-            learnedPhrases: this.learnedPhrases,
-            emotionalAssociations: Array.from(this.emotionalAssociations.entries()).map(([emotion, wordMap]) => 
-                [emotion, Array.from(wordMap.entries())]
-            ),
-            userNickname: this.userNickname,
-            communicationStyle: this.communicationStyle,
-            recentInputs: this.recentInputs.slice(-5) // Only save recent ones
+    inventWordForFeeling(feeling) {
+        const soundPatterns = {
+            hungry: () => 'g' + this.pickRandom(['ra', 'ro', 'ru']) + this.pickRandom(['k', 'm', 'b']),
+            happy: () => this.pickRandom(['yi', 'wi', 'pi']) + this.pickRandom(['mi', 'ha', 'ya']),
+            sad: () => this.pickRandom(['oo', 'ah', 'uh']) + this.pickRandom(['wa', 'ma', 'na']),
+            tired: () => this.pickRandom(['zzz', 'meh', 'ugh']) + this.pickRandom(['', 'a', 'o']),
+            sick: () => this.pickRandom(['ick', 'ugh', 'bleh']) + this.pickRandom(['', 'y', 'i']),
+            lonely: () => this.pickRandom(['hey', 'hel', 'loo']) + this.pickRandom(['o', 'p', '']),
+            general: () => this.pickRandom(['ba', 'ma', 'da', 'wa']) + this.pickRandom(['ba', 'ma', 'ya'])
         };
+        
+        const generator = soundPatterns[feeling] || soundPatterns.general;
+        return generator();
     }
 
-    deserialize(data) {
-        if (data.vocabulary) {
-            this.vocabulary = new Map(data.vocabulary);
+    constructSpeech(words, intensity) {
+        if (words.length === 0) return 'meh';
+        
+        let speech = words[0];
+        
+        // Add additional words based on learning stage and intensity
+        if (this.learningStage >= 2 && words.length > 1) {
+            speech += ' ' + words[1];
         }
         
-        if (data.learnedPhrases) {
-            this.learnedPhrases = data.learnedPhrases;
+        // Add emotional modifiers
+        if (intensity > 0.8) {
+            speech += '!';
+        } else if (intensity < 0.3) {
+            speech += '...';
         }
         
-        if (data.emotionalAssociations) {
-            this.emotionalAssociations = new Map(
-                data.emotionalAssociations.map(([emotion, wordEntries]) => 
-                    [emotion, new Map(wordEntries)]
-                )
+        return speech;
+    }
+
+    saySpeechy(speech, context, intensity) {
+        // Display in chat
+        if (window.tamagotchiGame) {
+            window.tamagotchiGame.addChatMessage(
+                this.creature.name || 'Pet', 
+                speech, 
+                'creature'
             );
         }
         
-        if (data.userNickname) {
-            this.userNickname = data.userNickname;
+        // Speak out loud
+        if (window.tamagotchiGame && window.tamagotchiGame.audioSystem) {
+            let emotion = this.mapContextToEmotion(context);
+            
+            window.tamagotchiGame.audioSystem.speakText(
+                speech, 
+                emotion, 
+                this.learningStage
+            );
+            
+            window.tamagotchiGame.audioSystem.playCreatureSound(emotion);
         }
         
-        if (data.communicationStyle) {
-            this.communicationStyle = { ...this.communicationStyle, ...data.communicationStyle };
-        }
+        // Visual speaking animation
+        this.creature.speak(speech.length * 150);
+    }
+
+    mapContextToEmotion(context) {
+        const emotionMap = {
+            hungry: 'sad',
+            happy: 'happy',
+            sad: 'sad',
+            tired: 'sleepy',
+            sick: 'sad',
+            lonely: 'sad',
+            excited: 'happy',
+            angry: 'angry'
+        };
         
-        if (data.recentInputs) {
-            this.recentInputs = data.recentInputs;
+        return emotionMap[context] || 'neutral';
+    }
+
+    trackSpeechAttempt(speech, context, intensity, timestamp) {
+        const attemptId = Date.now() + Math.random();
+        
+        this.speechAttempts.push({
+            id: attemptId,
+            speech: speech,
+            context: context,
+            intensity: intensity,
+            timestamp: timestamp,
+            userReaction: null,
+            reactionTime: null,
+            success: null
+        });
+        
+        // Start watching for user reaction
+        this.startReactionTimer(attemptId);
+        
+        // Keep only recent attempts
+        if (this.speechAttempts.length > 50) {
+            this.speechAttempts = this.speechAttempts.slice(-30);
         }
     }
+
+    startReactionTimer(attemptId) {
+        // Watch for user reaction for 10 seconds
+        setTimeout(() => {
+            this.evaluateSpeechAttempt(attemptId);
+        }, 10000);
+    }
+
+    // USER REACTION TRACKING
+    recordUserAction(actionType, timestamp) {
+        // Find recent speech attempts that haven't been evaluated
+        const recentAttempts = this.speechAttempts.filter(attempt => 
+            !attempt.userReaction && 
+            timestamp - attempt.timestamp < 10000 && 
+            timestamp > attempt.timestamp
+        );
+        
+        // Record reaction for the most recent attempt
+        if (recentAttempts.length > 0) {
+            const attempt = recentAttempts[recentAttempts.length - 1];
+            attempt.userReaction = actionType;
+            attempt.reactionTime = timestamp - attempt.timestamp;
+            
+            // Immediate evaluation if reaction is clear
+            if (['feed', 'play', 'pet', 'ignore'].includes(actionType)) {
+                this.evaluateSpeechAttempt(attempt.id);
+            }
+        }
+    }
+
+    recordUserReaction(actionType, timestamp, isPositive) {
+        this.recordUserAction(actionType, timestamp);
+        
+        // Learn broader behavioral patterns
+        if (isPositive) {
+            this.communicationFrequency = Math.min(1.0, this.communicationFrequency + 0.1);
+        } else {
+            this.communicationFrequency = Math.max(0.1, this.communicationFrequency - 0.05);
+        }
+    }
+
+    evaluateSpeechAttempt(attemptId) {
+        const attempt = this.speechAttempts.find(a => a.id === attemptId);
+        if (!attempt || attempt.success !== null) return;
+        
+        let success = false;
+        let learningValue = 0;
+        
+        // Evaluate success based on context and user reaction
+        if (attempt.context === 'hungry' && attempt.userReaction === 'feed') {
+            success = true;
+            learningValue = 0.3;
+        } else if (attempt.context === 'happy' && ['pet', 'play'].includes(attempt.userReaction)) {
+            success = true;
+            learningValue = 0.2;
+        } else if (attempt.context === 'lonely' && attempt.userReaction !== 'ignore') {
+            success = true;
+            learningValue = 0.25;
+        } else if (attempt.context === 'sick' && attempt.userReaction === 'medicine') {
+            success = true;
+            learningValue = 0.4;
+        } else if (attempt.userReaction === 'ignore' || attempt.reactionTime > 8000) {
+            success = false;
+            learningValue = -0.1;
+        } else if (attempt.userReaction === 'pet') {
+            success = true;
+            learningValue = 0.1;
+        }
+        
+        attempt.success = success;
+        
+        // Update vocabulary based on success/failure
+        this.updateVocabularyFromAttempt(attempt, learningValue);
+    }
+
+updateVocabularyFromAttempt(attempt, learningValue) {
+       const words = attempt.speech.split(' ');
+       
+       words.forEach(word => {
+           if (this.vocabulary.has(word)) {
+               const wordData = this.vocabulary.get(word);
+               
+               // Update success rate
+               const totalAttempts = wordData.usageCount + 1;
+               const previousSuccess = wordData.successRate * wordData.usageCount;
+               wordData.successRate = (previousSuccess + (learningValue > 0 ? 1 : 0)) / totalAttempts;
+               wordData.usageCount = totalAttempts;
+               
+               // Update concept understanding
+               if (learningValue > 0.2) {
+                   wordData.concept = attempt.context; // successful context becomes meaning
+                   wordData.contexts.push(attempt.context);
+               }
+               
+               // Record user reaction pattern
+               wordData.userReactions.push({
+                   reaction: attempt.userReaction,
+                   reactionTime: attempt.reactionTime,
+                   success: attempt.success,
+                   timestamp: attempt.timestamp
+               });
+               
+               // Strengthen or weaken word
+               if (learningValue > 0) {
+                   this.reinforceWord(word);
+               } else {
+                   this.weakenWord(word);
+               }
+           }
+       });
+   }
+
+   reinforceWord(word) {
+       const wordData = this.vocabulary.get(word);
+       if (!wordData) return;
+       
+       wordData.strength = Math.min(1.0, (wordData.strength || 0.5) + 0.15);
+       
+       if (wordData.successRate > 0.7 && wordData.usageCount > 3) {
+           wordData.priority = 'high';
+       }
+   }
+
+   weakenWord(word) {
+       const wordData = this.vocabulary.get(word);
+       if (!wordData) return;
+       
+       wordData.strength = Math.max(0.1, (wordData.strength || 0.5) - 0.1);
+       
+       if (wordData.successRate < 0.2 && wordData.usageCount > 5) {
+           this.vocabulary.delete(word);
+       }
+   }
+
+   // USER INPUT PROCESSING
+   processUserInput(input, type = 'text') {
+       console.log(`Processing user input: "${input}"`);
+       
+       const userTone = this.detectUserTone(input);
+       const userEmotion = this.detectUserEmotion(input);
+       
+       this.recordUserAttention(Date.now());
+       
+       setTimeout(() => {
+           this.respondToUser(input, userTone, userEmotion);
+       }, 500 + Math.random() * 1500);
+       
+       this.learnFromUserInput(input, userTone, userEmotion);
+   }
+
+   detectUserTone(input) {
+       const indicators = {
+           happy: ['!', 'good', 'great', 'awesome', 'love', 'yes', 'yay'],
+           angry: ['bad', 'no', 'stop', 'shut', 'stupid', 'hate', 'angry'],
+           sad: ['sad', 'sorry', 'hurt', 'cry', 'miss'],
+           excited: ['wow', 'amazing', 'incredible', '!!', 'omg'],
+           gentle: ['please', 'thank', 'sweet', 'cute', 'love'],
+           harsh: ['shut up', 'stupid', 'dumb', 'annoying']
+       };
+       
+       const inputLower = input.toLowerCase();
+       
+       for (let [tone, keywords] of Object.entries(indicators)) {
+           for (let keyword of keywords) {
+               if (inputLower.includes(keyword)) {
+                   return tone;
+               }
+           }
+       }
+       
+       return 'neutral';
+   }
+
+   detectUserEmotion(input) {
+       const patterns = {
+           praise: /good|great|awesome|amazing|wonderful|perfect|smart|clever/i,
+           scold: /bad|no|stop|wrong|stupid|shut/i,
+           question: /\?|what|who|where|when|why|how/i,
+           command: /go|come|sit|stay|do|get/i,
+           affection: /love|cute|sweet|adorable|precious/i
+       };
+       
+       for (let [emotion, pattern] of Object.entries(patterns)) {
+           if (pattern.test(input)) {
+               return emotion;
+           }
+       }
+       
+       return 'neutral';
+   }
+
+   respondToUser(input, userTone, userEmotion) {
+       let responseContext = 'social_response';
+       let intensity = 0.5;
+       
+       if (userTone === 'happy' || userEmotion === 'praise') {
+           responseContext = 'happy';
+           intensity = 0.8;
+           this.creature.addHappiness(10);
+       } else if (userTone === 'angry' || userEmotion === 'scold') {
+           responseContext = 'sad';
+           intensity = 0.9;
+           this.creature.addHappiness(-15);
+       } else if (userEmotion === 'affection') {
+           responseContext = 'love';
+           intensity = 0.9;
+           this.creature.addHappiness(15);
+       } else if (userEmotion === 'question') {
+           responseContext = 'confused';
+           intensity = 0.6;
+       }
+       
+       this.expressThought(responseContext, intensity);
+   }
+
+   learnFromUserInput(input, userTone, userEmotion) {
+       const words = input.toLowerCase().split(' ');
+       
+       words.forEach(userWord => {
+           if (userWord.length > 2) {
+               if (!this.toneMemory.has(userWord)) {
+                   this.toneMemory.set(userWord, {
+                       positiveCount: 0,
+                       negativeCount: 0,
+                       contexts: []
+                   });
+               }
+               
+               const memory = this.toneMemory.get(userWord);
+               
+               if (['happy', 'gentle', 'affection', 'praise'].includes(userTone) || 
+                   ['praise', 'affection'].includes(userEmotion)) {
+                   memory.positiveCount++;
+               } else if (['angry', 'harsh'].includes(userTone) || 
+                         ['scold'].includes(userEmotion)) {
+                   memory.negativeCount++;
+               }
+               
+               memory.contexts.push({
+                   tone: userTone,
+                   emotion: userEmotion,
+                   timestamp: Date.now()
+               });
+           }
+       });
+   }
+
+   recordUserAttention(timestamp) {
+       this.thoughtQueue = this.thoughtQueue.filter(thought => thought.type !== 'want_attention');
+       this.creature.addHappiness(3);
+       this.creature.lastInteraction = timestamp;
+   }
+
+   update(currentTime) {
+       // Update learning stage based on age and interactions
+       this.updateLearningStage();
+       
+       // Process thought queue
+       this.processThoughtQueue(currentTime);
+   }
+
+   updateLearningStage() {
+       const age = this.creature.age;
+       const interactions = this.creature.totalInteractions;
+       const vocabularySize = this.vocabulary.size;
+       
+       let targetStage = 1;
+       if (age > 0.5 && interactions > 3) targetStage = 2;
+       if (age > 2 && interactions > 10 && vocabularySize > 3) targetStage = 3;
+       if (age > 8 && interactions > 25 && vocabularySize > 8) targetStage = 4;
+       
+       if (targetStage > this.learningStage) {
+           this.learningStage = targetStage;
+           console.log(`Language stage evolved to: ${targetStage}`);
+       }
+   }
+
+   processThoughtQueue(currentTime) {
+       // Express urgent thoughts
+       const urgentThoughts = this.thoughtQueue.filter(thought => 
+           thought.urgency > 0.6 && 
+           currentTime - thought.timestamp < 30000
+       );
+       
+       if (urgentThoughts.length > 0 && currentTime - this.lastSpeechTime > this.speechCooldown) {
+           const thought = urgentThoughts[0];
+           this.expressThought(thought.type, thought.urgency);
+           
+           // Remove expressed thought
+           this.thoughtQueue = this.thoughtQueue.filter(t => t !== thought);
+       }
+   }
+
+   pickRandom(array) {
+       return array[Math.floor(Math.random() * array.length)];
+   }
+
+   getStageName() {
+       const stages = {
+           1: 'Babbling',
+           2: 'First Words', 
+           3: 'Simple Speech',
+           4: 'Complex Language'
+       };
+       return stages[Math.floor(this.learningStage)] || 'Unknown';
+   }
+
+   serialize() {
+       return {
+           vocabulary: Array.from(this.vocabulary.entries()),
+           contextualLearning: Array.from(this.contextualLearning.entries()),
+           speechAttempts: this.speechAttempts.slice(-20),
+           learningStage: this.learningStage,
+           personality: this.personality,
+           communicationFrequency: this.communicationFrequency,
+           toneMemory: Array.from(this.toneMemory.entries())
+       };
+   }
+
+   deserialize(data) {
+       if (data.vocabulary) this.vocabulary = new Map(data.vocabulary);
+       if (data.contextualLearning) this.contextualLearning = new Map(data.contextualLearning);
+       if (data.speechAttempts) this.speechAttempts = data.speechAttempts;
+       if (data.learningStage) this.learningStage = data.learningStage;
+       if (data.personality) this.personality = data.personality;
+       if (data.communicationFrequency) this.communicationFrequency = data.communicationFrequency;
+       if (data.toneMemory) this.toneMemory = new Map(data.toneMemory);
+   }
 }

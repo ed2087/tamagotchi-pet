@@ -50,19 +50,22 @@ class AudioSystem {
             return;
         }
 
-        // Wait for voices to load
         const setVoice = () => {
             const voices = this.speechSynth.getVoices();
             
-            // Prefer higher-pitched, softer voices for the creature
+            // Look for the cutest/highest voices first
             this.creatureVoice = voices.find(voice => 
-                voice.name.includes('Female') || 
                 voice.name.includes('Google UK English Female') ||
-                voice.name.includes('Microsoft Zira')
+                voice.name.includes('Microsoft Zira') ||
+                voice.name.includes('Female') ||
+                voice.name.includes('Child') ||
+                voice.name.includes('Young')
+            ) || voices.find(voice => 
+                voice.gender === 'female'
             ) || voices[0];
             
             if (this.creatureVoice) {
-                console.log('Creature voice set:', this.creatureVoice.name);
+                console.log('Cute creature voice set:', this.creatureVoice.name);
             }
         };
 
@@ -206,40 +209,43 @@ class AudioSystem {
         if (!this.speechSynth || !this.creatureVoice || !this.isEnabled) return;
 
         try {
-            // Cancel any ongoing speech
             this.speechSynth.cancel();
 
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.voice = this.creatureVoice;
             utterance.volume = this.volume;
 
-            // Adjust speech parameters based on emotion and stage
+            // CUTE VOICE SETTINGS
+            utterance.pitch = 1.8; // Much higher pitch = cuter
+            utterance.rate = 0.7;  // Slower = more baby-like
+
+            // Adjust based on emotion (but keep it cute)
             switch (emotion) {
                 case 'happy':
-                    utterance.pitch = 1.2;
-                    utterance.rate = 1.1;
-                    break;
-                case 'sad':
-                    utterance.pitch = 0.8;
+                    utterance.pitch = 2.0; // Extra high when happy
                     utterance.rate = 0.8;
                     break;
+                case 'sad':
+                    utterance.pitch = 1.6; // Still high but lower
+                    utterance.rate = 0.6;  // Slower when sad
+                    break;
                 case 'angry':
-                    utterance.pitch = 0.9;
-                    utterance.rate = 1.3;
+                    utterance.pitch = 1.7; // Angry but still cute
+                    utterance.rate = 0.9;
                     break;
                 case 'sleepy':
-                    utterance.pitch = 0.7;
-                    utterance.rate = 0.6;
+                    utterance.pitch = 1.4; // Lower and sleepy
+                    utterance.rate = 0.5;  // Very slow
                     break;
                 default:
-                    utterance.pitch = 1.0;
-                    utterance.rate = 1.0;
+                    utterance.pitch = 1.8;
+                    utterance.rate = 0.7;
             }
 
-            // Adjust for evolution stage
+            // Make younger stages even cuter
             if (stage <= 2) {
-                utterance.pitch += 0.2; // Higher pitch for younger stages
-                utterance.rate *= 0.9; // Slightly slower
+                utterance.pitch += 0.3; // Even higher for baby stages
+                utterance.rate *= 0.8;   // Even slower
             }
 
             this.speechSynth.speak(utterance);

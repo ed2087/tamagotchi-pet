@@ -22,6 +22,12 @@ class Creature {
         this.totalInteractions = 0;
         this.trustLevel = 50; // How much creature trusts user
         
+        // Thought system
+        this.thoughtGenerationRate = 0.3 + Math.random() * 0.4; // 0.3-0.7
+        this.lastThought = Date.now();
+        this.currentThoughts = [];
+        this.lastSpontaneousSpeech = 0;
+        
         // Visual elements
         this.element = document.getElementById('creature');
         this.leftEye = document.getElementById('leftEye');
@@ -39,6 +45,7 @@ class Creature {
     init() {
         this.startBlinkTimer();
         this.startMoodUpdates();
+        this.startThoughtGeneration();
     }
 
     initializeNew() {
@@ -54,6 +61,8 @@ class Creature {
         this.trustLevel = 50;
         this.totalInteractions = 0;
         this.lastInteraction = Date.now();
+        this.currentThoughts = [];
+        this.lastSpontaneousSpeech = Date.now();
         
         console.log(`New creature born: ${this.name}`);
     }
@@ -149,6 +158,77 @@ class Creature {
         this.updateAppearance();
     }
 
+    // THOUGHT GENERATION SYSTEM
+    startThoughtGeneration() {
+        setInterval(() => {
+            this.generateThought();
+        }, 3000 + Math.random() * 7000); // Every 3-10 seconds
+    }
+
+    generateThought() {
+        if (!this.isAlive) return;
+        
+        const currentTime = Date.now();
+        let thoughtType = 'general';
+        let urgency = 0.1;
+        
+        // Generate thoughts based on current state
+        if (this.hunger < 30) {
+            thoughtType = 'hungry';
+            urgency = (30 - this.hunger) / 30;
+        } else if (this.health < 40) {
+            thoughtType = 'sick';
+            urgency = (40 - this.health) / 40;
+        } else if (this.energy < 20) {
+            thoughtType = 'tired';
+            urgency = (20 - this.energy) / 20;
+        } else if (this.happiness > 80) {
+            thoughtType = 'happy';
+            urgency = 0.6;
+        } else if (currentTime - this.lastInteraction > 120000) { // 2 minutes
+            thoughtType = 'lonely';
+            urgency = Math.min(1.0, (currentTime - this.lastInteraction) / 300000);
+        } else if (Math.random() < 0.3) {
+            thoughtType = 'random_babble';
+            urgency = 0.2;
+        }
+        
+        this.currentThoughts.push({
+            type: thoughtType,
+            urgency: urgency,
+            timestamp: currentTime
+        });
+        
+        // Creature might express this thought
+        if (window.tamagotchiGame && window.tamagotchiGame.languageLearning) {
+            // Higher urgency = more likely to speak
+            if (urgency > 0.4 || Math.random() < this.thoughtGenerationRate) {
+                setTimeout(() => {
+                    window.tamagotchiGame.languageLearning.expressThought(thoughtType, urgency);
+                }, Math.random() * 2000);
+            }
+        }
+        
+        // Keep only recent thoughts
+        if (this.currentThoughts.length > 10) {
+            this.currentThoughts = this.currentThoughts.slice(-5);
+        }
+    }
+
+    recordUserAbsence() {
+        // Creature notices when user leaves
+        if (Math.random() < 0.3) {
+            this.addHappiness(-2);
+            
+            // Might express sadness about user leaving
+            if (window.tamagotchiGame && window.tamagotchiGame.languageLearning) {
+                setTimeout(() => {
+                    window.tamagotchiGame.languageLearning.expressThought('user_left', 0.6);
+                }, 2000 + Math.random() * 3000);
+            }
+        }
+    }
+
     // Visual updates
     updateAppearance() {
         if (!this.element) return;
@@ -210,16 +290,11 @@ class Creature {
                 break;
         }
 
-        // Random position around creature
-        const creatureRect = this.element.getBoundingClientRect();
-        const containerRect = effectsContainer.getBoundingClientRect();
-        
         effect.style.left = Math.random() * 100 + '%';
         effect.style.top = Math.random() * 100 + '%';
 
         effectsContainer.appendChild(effect);
 
-        // Remove effect after animation
         setTimeout(() => {
             if (effect.parentNode) {
                 effect.parentNode.removeChild(effect);
@@ -234,12 +309,10 @@ class Creature {
             
             this.blink();
             
-            // Random interval between 2-6 seconds
             const nextBlink = 2000 + Math.random() * 4000;
             setTimeout(blink, nextBlink);
         };
         
-        // Start first blink
         setTimeout(blink, 2000);
     }
 
@@ -269,7 +342,6 @@ class Creature {
         }, duration);
     }
 
-    // Random actions
     performRandomAction() {
         if (!this.isAlive || this.isSleeping) return;
         
@@ -308,7 +380,6 @@ class Creature {
         }, 1000);
     }
 
-    // Life cycle
     die() {
         this.isAlive = false;
         this.health = 0;
@@ -317,9 +388,8 @@ class Creature {
         
         console.log(`${this.name} has died...`);
         
-        // Show death message
         if (window.tamagotchiGame) {
-            window.tamagotchiGame.addChatMessage('System', `${this.name} has passed away due to neglect... 💀`, 'system');
+            window.tamagotchiGame.addChatMessage('System', `${this.name} has passed away due to neglect...`, 'system');
         }
     }
 
@@ -334,7 +404,6 @@ class Creature {
         console.log(`${this.name} has been revived!`);
     }
 
-    // Sleep management
     sleep() {
         this.isSleeping = true;
         this.energy = Math.min(100, this.energy + 30);
@@ -347,7 +416,6 @@ class Creature {
         this.addHappiness(10);
     }
 
-    // Interaction tracking
     recordInteraction(type, intensity = 1) {
         this.lastInteraction = Date.now();
         this.totalInteractions++;
@@ -361,7 +429,6 @@ class Creature {
         }
     }
 
-    // Evolution
     evolve(newStage) {
         this.evolutionStage = newStage;
         this.element.classList.add('evolving');
@@ -372,17 +439,16 @@ class Creature {
         }, 2000);
         
         if (window.tamagotchiGame) {
-            window.tamagotchiGame.addChatMessage('System', `${this.name} has evolved to stage ${newStage}! 🌟`, 'system');
+            window.tamagotchiGame.addChatMessage('System', `${this.name} has evolved to stage ${newStage}!`, 'system');
         }
     }
 
     startMoodUpdates() {
         setInterval(() => {
             this.updateMood();
-        }, 5000); // Check mood every 5 seconds
+        }, 5000);
     }
 
-    // Serialization for saving/loading
     serialize() {
         return {
             name: this.name,
@@ -398,7 +464,8 @@ class Creature {
             evolutionStage: this.evolutionStage,
             lastInteraction: this.lastInteraction,
             totalInteractions: this.totalInteractions,
-            trustLevel: this.trustLevel
+            trustLevel: this.trustLevel,
+            thoughtGenerationRate: this.thoughtGenerationRate
         };
     }
 
