@@ -1,0 +1,100 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamagotchi Language Learning Pet</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/creature.css">
+    <link rel="stylesheet" href="styles/ui.css">
+    <link rel="stylesheet" href="styles/animations.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Status Bars -->
+        <div class="status-panel">
+            <div class="status-bar">
+                <label>Hunger</label>
+                <div class="bar-container">
+                    <div class="bar hunger-bar" id="hungerBar"></div>
+                </div>
+                <span class="status-value" id="hungerValue">100</span>
+            </div>
+            <div class="status-bar">
+                <label>Happiness</label>
+                <div class="bar-container">
+                    <div class="bar happiness-bar" id="happinessBar"></div>
+                </div>
+                <span class="status-value" id="happinessValue">100</span>
+            </div>
+            <div class="status-bar">
+                <label>Health</label>
+                <div class="bar-container">
+                    <div class="bar health-bar" id="healthBar"></div>
+                </div>
+                <span class="status-value" id="healthValue">100</span>
+            </div>
+            <div class="status-bar">
+                <label>Energy</label>
+                <div class="bar-container">
+                    <div class="bar energy-bar" id="energyBar"></div>
+                </div>
+                <span class="status-value" id="energyValue">100</span>
+            </div>
+        </div>
+
+        <!-- Main Creature Display -->
+        <div class="creature-stage" id="creatureStage">
+            <div class="creature" id="creature">
+                <div class="creature-body">
+                    <div class="creature-face">
+                        <div class="eye left-eye" id="leftEye"></div>
+                        <div class="eye right-eye" id="rightEye"></div>
+                        <div class="mouth" id="mouth"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Interaction Effects -->
+            <div class="interaction-effects" id="interactionEffects"></div>
+        </div>
+
+        <!-- Chat Interface -->
+        <div class="chat-panel">
+            <div class="chat-history" id="chatHistory"></div>
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" placeholder="Type to your pet..." maxlength="100">
+                <button id="voiceButton" class="voice-btn" title="Hold to speak">🎤</button>
+                <button id="sendButton" class="send-btn">Send</button>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-panel">
+            <button class="action-btn" id="feedBtn">🍎 Feed</button>
+            <button class="action-btn" id="playBtn">🎾 Play</button>
+            <button class="action-btn" id="sleepBtn">😴 Sleep</button>
+            <button class="action-btn" id="medicineBtn">💊 Medicine</button>
+        </div>
+
+        <!-- Info Display -->
+        <div class="info-panel">
+            <div class="creature-info">
+                <span>Age: <span id="creatureAge">0</span> days</span>
+                <span>Stage: <span id="evolutionStage">Mimicking</span></span>
+                <span>Name: <span id="creatureName">Unnamed</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="scripts/storage-manager.js"></script>
+    <script src="scripts/creature.js"></script>
+    <script src="scripts/needs-system.js"></script>
+    <script src="scripts/language-learning.js"></script>
+    <script src="scripts/audio-system.js"></script>
+    <script src="scripts/interaction-handler.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>

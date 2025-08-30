@@ -1,0 +1,197 @@
+/* Creature Base Styling */
+.creature {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    transition: all 0.3s ease;
+}
+
+.creature-body {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.2),
+        inset 0 2px 5px rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+/* Creature Face - ORIGINAL POSITIONING */
+.creature-face {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 60%;
+}
+
+/* Eyes - ORIGINAL POSITIONING, just better visibility */
+.eye {
+    position: absolute;
+    width: 12px;  /* Back to original size */
+    height: 12px; /* Back to original size */
+    background: #1a1a1a; /* Darker for visibility */
+    border: 1px solid #ffffff; /* Thin white border */
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.left-eye {
+    top: 20%;    /* ORIGINAL POSITION */
+    left: 25%;   /* ORIGINAL POSITION */
+}
+
+.right-eye {
+    top: 20%;    /* ORIGINAL POSITION */
+    right: 25%;  /* ORIGINAL POSITION */
+}
+
+/* Eye states */
+.eye.blink {
+    height: 2px;
+    border-radius: 2px;
+}
+
+.eye.sleepy {
+    height: 6px;
+    opacity: 0.7;
+}
+
+.eye.angry {
+    background: #ffffff;
+    border-color: #d63031;
+    transform: rotate(-15deg);
+}
+
+.eye.happy {
+    background: #1a1a1a;
+    border-color: #00b894;
+    transform: scale(1.2);
+}
+
+/* Mouth - ORIGINAL POSITIONING, just better visibility */
+.mouth {
+    position: absolute;
+    bottom: 30%;  /* ORIGINAL POSITION */
+    left: 50%;    /* ORIGINAL POSITION */
+    transform: translateX(-50%);
+    width: 20px;  /* ORIGINAL SIZE */
+    height: 10px; /* ORIGINAL SIZE */
+    border: 2px solid #1a1a1a; /* Darker border for visibility */
+    background: rgba(255, 255, 255, 0.8); /* White background for contrast */
+    border-top: none;
+    border-radius: 0 0 20px 20px;
+    transition: all 0.3s ease;
+}
+
+/* Mouth expressions */
+.mouth.happy {
+    border-color: #1a1a1a;
+    background: rgba(255, 255, 255, 0.9);
+    width: 25px;  /* ORIGINAL SIZE */
+    height: 12px; /* ORIGINAL SIZE */
+}
+
+.mouth.sad {
+    border-bottom: none;
+    border-top: 2px solid #1a1a1a;
+    border-radius: 20px 20px 0 0;
+    transform: translateX(-50%) rotate(180deg);
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.mouth.angry {
+    border-color: #d63031;
+    background: rgba(255, 255, 255, 0.8);
+    width: 15px;  /* ORIGINAL SIZE */
+    height: 8px;  /* ORIGINAL SIZE */
+}
+
+.mouth.speaking {
+    animation: speak 0.3s ease-in-out infinite alternate;
+    border-color: #1a1a1a;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+/* Creature Mood States - More subtle colors */
+.creature.happy .creature-body {
+    background: linear-gradient(135deg, #81ecec, #00b894);
+    animation: bounce 1s ease-in-out infinite alternate;
+}
+
+.creature.sad .creature-body {
+    background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+    transform: scale(0.9);
+}
+
+.creature.angry .creature-body {
+    background: linear-gradient(135deg, #fd79a8, #e84393);
+    animation: shake 0.5s ease-in-out infinite;
+}
+
+.creature.hungry .creature-body {
+    background: linear-gradient(135deg, #fdcb6e, #f39c12);
+    animation: wobble 2s ease-in-out infinite;
+}
+
+.creature.sleepy .creature-body {
+    background: linear-gradient(135deg, #b2bec3, #636e72);
+    opacity: 0.8;
+    animation: breathe 3s ease-in-out infinite;
+}
+
+.creature.sick .creature-body {
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+    animation: shiver 0.8s ease-in-out infinite;
+    opacity: 0.7;
+}
+
+.creature.dead .creature-body {
+    background: #2d3436;
+    transform: rotate(90deg) scale(0.8);
+    opacity: 0.5;
+}
+
+/* Interaction Effects */
+.interaction-effects {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.heart-effect {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    color: #e84393;
+    font-size: 20px;
+    animation: floatUp 2s ease-out forwards;
+    pointer-events: none;
+}
+
+.sparkle-effect {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #fdcb6e;
+    border-radius: 50%;
+    animation: sparkle 1s ease-out forwards;
+    pointer-events: none;
+}
+
+/* Hover Effects */
+.creature-stage:hover .creature {
+    transform: scale(1.05);
+}
+
+.creature-stage:active .creature {
+    transform: scale(0.95);
+}

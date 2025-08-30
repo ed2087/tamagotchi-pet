@@ -1,0 +1,237 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+}
+
+.game-container {
+    display: grid;
+    grid-template-areas: 
+        "status creature info"
+        "actions creature chat";
+    grid-template-columns: 200px 1fr 300px;
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    width: 90vw;
+    max-width: 1000px;
+    height: 80vh;
+}
+
+/* Status Panel */
+.status-panel {
+    grid-area: status;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.status-bar {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.status-bar label {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: white;
+}
+
+.bar-container {
+    background: rgba(0, 0, 0, 0.3);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+    width: 100%;
+}
+
+.hunger-bar { background: linear-gradient(90deg, #ff9a56, #ff6b35); }
+.happiness-bar { background: linear-gradient(90deg, #ffeaa7, #fdcb6e); }
+.health-bar { background: linear-gradient(90deg, #55a3ff, #003d82); }
+.energy-bar { background: linear-gradient(90deg, #a8e6cf, #56ab91); }
+
+.status-value {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.8);
+    float: right;
+}
+
+/* Creature Stage */
+.creature-stage {
+    grid-area: creature;
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Chat Panel */
+.chat-panel {
+    grid-area: chat;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+}
+
+.chat-history {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    max-height: 200px;
+}
+
+.chat-input-container {
+    display: flex;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#chatInput {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    margin-right: 5px;
+    outline: none;
+}
+
+.voice-btn, .send-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    color: white;
+    cursor: pointer;
+    margin-left: 5px;
+    transition: all 0.2s ease;
+}
+
+.voice-btn:hover, .send-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.voice-btn:active {
+    background: #ff6b6b;
+    transform: scale(0.95);
+}
+
+/* Action Panel */
+.action-panel {
+    grid-area: actions;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.action-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 12px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+}
+
+/* Info Panel */
+.info-panel {
+    grid-area: info;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    align-self: start;
+}
+
+.creature-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: white;
+    font-size: 13px;
+}
+
+.creature-info span {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px 10px;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .game-container {
+        grid-template-areas: 
+            "creature"
+            "status"
+            "actions"
+            "chat"
+            "info";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto auto;
+        width: 95vw;
+        height: auto;
+        max-height: none;
+    }
+    
+    .status-panel {
+        flex-direction: row;
+        overflow-x: auto;
+    }
+    
+    .action-panel {
+        flex-direction: row;
+    }
+    
+    .creature-stage {
+        min-height: 300px;
+    }
+}

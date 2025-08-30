@@ -1,0 +1,211 @@
+/* Chat Interface Styling */
+.chat-message {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    max-width: 85%;
+    word-wrap: break-word;
+    animation: messageSlide 0.3s ease-out;
+}
+
+.chat-message.user {
+    background: rgba(116, 185, 255, 0.2);
+    border: 1px solid rgba(116, 185, 255, 0.3);
+    margin-left: auto;
+    text-align: right;
+}
+
+.chat-message.creature {
+    background: rgba(0, 184, 148, 0.2);
+    border: 1px solid rgba(0, 184, 148, 0.3);
+    margin-right: auto;
+}
+
+.chat-message.system {
+    background: rgba(253, 203, 110, 0.2);
+    border: 1px solid rgba(253, 203, 110, 0.3);
+    margin: 0 auto;
+    text-align: center;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.chat-message.emergency {
+    background: rgba(214, 48, 49, 0.3);
+    border: 2px solid rgba(214, 48, 49, 0.5);
+    margin: 0 auto;
+    text-align: center;
+    font-weight: bold;
+    animation: pulseGlow 1s ease-in-out infinite;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    opacity: 0.8;
+    margin-bottom: 4px;
+}
+
+.message-content {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.message-content em {
+    opacity: 0.7;
+    font-size: 12px;
+}
+
+/* Voice Button States */
+.voice-btn.recording {
+    animation: pulseRed 1s ease-in-out infinite;
+    transform: scale(1.1);
+}
+
+@keyframes pulseRed {
+    0%, 100% { background: rgba(225, 112, 85, 0.8); }
+    50% { background: rgba(214, 48, 49, 0.9); }
+}
+
+/* Context Menu */
+.context-menu {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    min-width: 150px;
+}
+
+.context-menu-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 14px;
+    color: #333;
+}
+
+.context-menu-item:hover {
+    background: rgba(116, 185, 255, 0.2);
+}
+
+.context-menu-item:first-child {
+    border-top: none;
+}
+
+/* Scrollbar Styling */
+.chat-history::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-history::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.chat-history::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.chat-history::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Loading and State Indicators */
+.loading-indicator {
+    display: inline-block;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.typing-indicator {
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Button Hover Effects */
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.send-btn:disabled,
+.voice-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .chat-input-container {
+        flex-wrap: wrap;
+        padding: 15px;
+    }
+    
+    #chatInput {
+        margin-bottom: 10px;
+        margin-right: 0;
+    }
+    
+    .voice-btn,
+    .send-btn {
+        margin: 0 5px;
+    }
+    
+    .context-menu {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 300px;
+    }
+    
+    .chat-message {
+        font-size: 16px; /* Larger text for mobile */
+    }
+}
+
+/* Accessibility */
+.action-btn:focus,
+.voice-btn:focus,
+.send-btn:focus {
+    outline: 2px solid #74b9ff;
+    outline-offset: 2px;
+}
+
+#chatInput:focus {
+    outline: 2px solid #74b9ff;
+    outline-offset: 1px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .chat-message {
+        border-width: 2px;
+    }
+    
+    .action-btn,
+    .voice-btn,
+    .send-btn {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .chat-message,
+    .action-btn,
+    .voice-btn,
+    .send-btn {
+        animation: none;
+        transition: none;
+    }
+    
+    .creature {
+        animation: none;
+    }
+}
