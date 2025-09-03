@@ -1,3 +1,4 @@
+
 // AdvancedLanguageLearning - sophisticated language acquisition with cognitive integration
 class AdvancedLanguageLearning {
     constructor(creature) {
@@ -1402,7 +1403,13 @@ recordLanguageInteraction(input, type, analysis, context) {
 
     generateAndDeliverResponse(goal, strategy, analysis, context) {
         const currentTime = Date.now();
-        if (currentTime - this.lastSpeechTime < this.speechCooldown) return;
+        
+        // Skip cooldown for direct user input
+        const isUserInput = context.inputType === 'text' || context.inputType === 'voice';
+        
+        if (!isUserInput && currentTime - this.lastSpeechTime < this.speechCooldown) {
+            return; // Only block spontaneous speech, not responses to user
+        }
         
         const response = this.generateResponse(goal, strategy, analysis, context);
         
@@ -2337,4 +2344,4 @@ learnNewWord(word, analysis) {
 }
 
 
-//ResponseGenerator 
+
