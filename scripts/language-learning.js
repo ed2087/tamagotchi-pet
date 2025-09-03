@@ -608,6 +608,126 @@ updateVocabularyFromAttempt(attempt, learningValue) {
        return stages[Math.floor(this.learningStage)] || 'Unknown';
    }
 
+
+   generateFriendlyResponse(analysis) {
+    const friendlySounds = this.getHighEnergyVocalizations();
+    const name = this.extractPersonName(analysis);
+    
+    if (name && this.languageSystem.entityManager) {
+        return {
+            text: friendlySounds + '! ' + this.generateBasicSound('happy').text,
+            confidence: 0.8,
+            expectedReaction: 'positive'
+        };
+    }
+    
+    return {
+        text: friendlySounds + '! ' + this.generateBasicSound('happy').text,
+        confidence: 0.7,
+        expectedReaction: 'positive'
+    };
+}
+
+generateShyAcknowledgment() {
+    const shySounds = this.getSoftVocalizations();
+    return {
+        text: shySounds + '... ' + this.generateBasicSound('happy').text,
+        confidence: 0.4,
+        expectedReaction: 'gentle'
+    };
+}
+
+generateProudResponse() {
+    const proudSounds = this.getHighEnergyVocalizations();
+    return {
+        text: proudSounds + '! ' + proudSounds + '!',
+        confidence: 0.9,
+        expectedReaction: 'positive'
+    };
+}
+
+generateCautiousResponse() {
+    const cautiousSounds = this.getSoftVocalizations();
+    return {
+        text: cautiousSounds + '?',
+        confidence: 0.3,
+        expectedReaction: 'patience'
+    };
+}
+
+generateSubtleHint(goal) {
+    const hintSounds = this.getSoftVocalizations();
+    return {
+        text: hintSounds + '... ' + hintSounds + '?',
+        confidence: 0.4,
+        expectedReaction: 'understanding'
+    };
+}
+
+generateDramaticExpression(goal) {
+    const dramaticSounds = this.getAggressiveVocalizations();
+    return {
+        text: dramaticSounds + '! ' + dramaticSounds + '! ' + dramaticSounds + '!',
+        confidence: 0.9,
+        expectedReaction: 'immediate_action'
+    };
+}
+
+generatePlayfulBehavior() {
+    const playfulSounds = this.getHighEnergyVocalizations();
+    return {
+        text: playfulSounds + '! ' + playfulSounds + '!',
+        confidence: 0.7,
+        expectedReaction: 'attention'
+    };
+}
+
+generateSadAppeal() {
+    const sadSounds = this.getSoftVocalizations();
+    return {
+        text: sadSounds + '? ' + sadSounds + '...',
+        confidence: 0.6,
+        expectedReaction: 'comfort'
+    };
+}
+
+generateAttentionGetting() {
+    const attentionSounds = ['hey', 'pst', 'ahem', 'yooo'];
+    const sound = attentionSounds[Math.floor(Math.random() * attentionSounds.length)];
+    return {
+        text: sound + '! ' + sound + '!',
+        confidence: 0.8,
+        expectedReaction: 'attention'
+    };
+}
+
+generateMildComplaint() {
+    const complaintSounds = this.getAggressiveVocalizations();
+    return {
+        text: complaintSounds + '...',
+        confidence: 0.5,
+        expectedReaction: 'attention'
+    };
+}
+
+generateWithdrawal() {
+    const withdrawalSounds = this.getSoftVocalizations();
+    return {
+        text: withdrawalSounds + '...',
+        confidence: 0.3,
+        expectedReaction: 'concern'
+    };
+}
+
+generateEmotionalDeflection() {
+    const emotionalSounds = this.getSoftVocalizations();
+    return {
+        text: emotionalSounds + '... ' + this.generateBasicSound('confused').text,
+        confidence: 0.3,
+        expectedReaction: 'redirection'
+    };
+}
+
    serialize() {
        return {
            vocabulary: Array.from(this.vocabulary.entries()),

@@ -1,177 +1,234 @@
-/* Creature Animations */
-@keyframes bounce {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-10px); }
-}
+/* Optimized animations for mobile performance */
 
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-3px); }
-    75% { transform: translateX(3px); }
-}
-
-@keyframes wobble {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(-2deg); }
-    75% { transform: rotate(2deg); }
-}
-
-@keyframes breathe {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-}
-
-@keyframes shiver {
-    0%, 100% { transform: translateX(0) translateY(0); }
-    25% { transform: translateX(-1px) translateY(-1px); }
-    50% { transform: translateX(1px) translateY(0); }
-    75% { transform: translateX(0) translateY(1px); }
-}
-
-@keyframes speak {
-    0% { 
-        width: 20px; 
-        height: 10px; 
-    }
-    100% { 
-        width: 25px; 
-        height: 8px; 
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }
 
-@keyframes blink {
-    0%, 90%, 100% { height: 12px; }
-    95% { height: 2px; }
-}
-
-/* Interaction Effect Animations */
-@keyframes floatUp {
-    0% {
-        opacity: 1;
-        transform: translateY(0) scale(0.5);
-    }
-    50% {
-        opacity: 1;
-        transform: translateY(-30px) scale(1);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(-60px) scale(0.5);
-    }
-}
-
-@keyframes sparkle {
-    0% {
-        opacity: 0;
-        transform: scale(0) rotate(0deg);
-    }
-    50% {
-        opacity: 1;
-        transform: scale(1.5) rotate(180deg);
-    }
-    100% {
-        opacity: 0;
-        transform: scale(0) rotate(360deg);
-    }
-}
-
-/* Status Bar Animations */
-@keyframes pulseGlow {
-    0%, 100% {
-        box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-    }
-    50% {
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
-    }
-}
-
-.bar.low {
-    animation: pulseGlow 1s ease-in-out infinite;
-}
-
-.bar.critical {
-    animation: pulseGlow 0.5s ease-in-out infinite;
-    background: linear-gradient(90deg, #d63031, #e17055) !important;
-}
-
-/* Chat Message Animations */
-@keyframes messageSlide {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.chat-message {
-    animation: messageSlide 0.3s ease-out;
-}
-
-/* Button Press Animations */
+/* Button press feedback */
 @keyframes buttonPress {
     0% { transform: scale(1); }
     50% { transform: scale(0.95); }
     100% { transform: scale(1); }
 }
 
-.action-btn:active {
-    animation: buttonPress 0.1s ease-out;
+.button-press {
+    animation: buttonPress 0.15s ease-out;
 }
 
-/* Evolution Stage Transition */
-@keyframes evolve {
-    0% { 
-        opacity: 1; 
-        transform: scale(1) rotate(0deg); 
+/* Status bar fill animation */
+@keyframes barFill {
+    0% { width: 0%; }
+    100% { width: var(--target-width); }
+}
+
+.bar.filling {
+    animation: barFill 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Chat message slide in */
+@keyframes messageSlideIn {
+    0% {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.chat-message {
+    animation: messageSlideIn 0.3s ease-out;
+}
+
+/* Panel slide transitions */
+@keyframes slideUp {
+    0% { transform: translateY(100%); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes slideDown {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(100%); }
+}
+
+.slide-up {
+    animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-down {
+    animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Info panel slide */
+@keyframes slideLeft {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes slideRight {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(100%); }
+}
+
+.slide-left {
+    animation: slideLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-right {
+    animation: slideRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Interaction feedback */
+@keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+.ripple-effect::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    width: 20px;
+    height: 20px;
+    animation: ripple 0.4s linear;
+    pointer-events: none;
+}
+
+/* Loading states */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading {
+    animation: spin 1s linear infinite;
+}
+
+/* Pulse for important notifications */
+@keyframes pulse {
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 1;
     }
     50% { 
-        opacity: 0; 
-        transform: scale(1.5) rotate(180deg); 
-    }
-    100% { 
-        opacity: 1; 
-        transform: scale(1) rotate(360deg); 
+        transform: scale(1.05);
+        opacity: 0.8;
     }
 }
 
-.creature.evolving {
-    animation: evolve 2s ease-in-out;
+.pulse {
+    animation: pulse 1.5s ease-in-out infinite;
 }
 
-/* Auto-blink animation for eyes */
-.eye {
-    animation: blink 4s infinite;
-    animation-delay: var(--blink-delay, 0s);
+/* Bounce for positive feedback */
+@keyframes bounce {
+    0%, 20%, 60%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    80% {
+        transform: translateY(-5px);
+    }
 }
 
-.left-eye {
-    --blink-delay: 0s;
+.bounce {
+    animation: bounce 0.6s ease-out;
 }
 
-.right-eye {
-    --blink-delay: 0.1s;
+/* Shake for errors or negative feedback */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+    20%, 40%, 60%, 80% { transform: translateX(3px); }
 }
 
-/* Pulsing effect for low needs */
-.status-bar.urgent {
-    animation: pulseGlow 1s ease-in-out infinite;
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Fade transitions */
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+.fade-out {
+    animation: fadeOut 0.3s ease-out;
+}
+
+/* Scale transitions for modals */
+@keyframes scaleIn {
+    0% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes scaleOut {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+}
+
+.scale-in {
+    animation: scaleIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scale-out {
+    animation: scaleOut 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Typing indicator */
 @keyframes typing {
-    0%, 60%, 100% { opacity: 0.3; }
-    30% { opacity: 1; }
-}
-
-.typing-indicator {
-    display: inline-block;
+    0%, 60%, 100% {
+        transform: translateY(0);
+    }
+    30% {
+        transform: translateY(-10px);
+    }
 }
 
 .typing-indicator span {
-    animation: typing 1.4s infinite;
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    margin: 0 2px;
+    animation: typing 1.4s infinite ease-in-out;
 }
 
 .typing-indicator span:nth-child(2) {
@@ -180,4 +237,20 @@
 
 .typing-indicator span:nth-child(3) {
     animation-delay: 0.4s;
+}
+
+/* Performance optimizations */
+.gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+/* Disable animations on low-end devices */
+@media (max-width: 480px) and (max-height: 640px) {
+    .creature.happy .creature-body,
+    .creature.sad .creature-body,
+    .creature.angry .creature-body,
+    .creature.hungry .creature-body {
+        animation-duration: 2s;
+    }
 }

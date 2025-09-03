@@ -1,10 +1,9 @@
- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tamagotchi Language Learning Pet</title>
+    <title>Advanced Tamagotchi Language Learning Pet</title>
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/creature.css">
     <link rel="stylesheet" href="styles/ui.css">
@@ -12,35 +11,64 @@
 </head>
 <body>
     <div class="game-container">
-        <!-- Status Bars -->
+        <!-- Enhanced Status Bars -->
         <div class="status-panel">
-            <div class="status-bar">
-                <label>Hunger</label>
-                <div class="bar-container">
-                    <div class="bar hunger-bar" id="hungerBar"></div>
+            <div class="basic-needs">
+                <h3>Physical Needs</h3>
+                <div class="status-bar">
+                    <label>Hunger</label>
+                    <div class="bar-container">
+                        <div class="bar hunger-bar" id="hungerBar"></div>
+                    </div>
+                    <span class="status-value" id="hungerValue">100</span>
                 </div>
-                <span class="status-value" id="hungerValue">100</span>
+                <div class="status-bar">
+                    <label>Health</label>
+                    <div class="bar-container">
+                        <div class="bar health-bar" id="healthBar"></div>
+                    </div>
+                    <span class="status-value" id="healthValue">100</span>
+                </div>
+                <div class="status-bar">
+                    <label>Energy</label>
+                    <div class="bar-container">
+                        <div class="bar energy-bar" id="energyBar"></div>
+                    </div>
+                    <span class="status-value" id="energyValue">100</span>
+                </div>
             </div>
-            <div class="status-bar">
-                <label>Happiness</label>
-                <div class="bar-container">
-                    <div class="bar happiness-bar" id="happinessBar"></div>
+
+            <!-- New Emotional/Social Status -->
+            <div class="emotional-needs">
+                <h3>Emotional State</h3>
+                <div class="status-bar">
+                    <label>Trust</label>
+                    <div class="bar-container">
+                        <div class="bar trust-bar" id="trustBar"></div>
+                    </div>
+                    <span class="status-value" id="trustValue">50</span>
                 </div>
-                <span class="status-value" id="happinessValue">100</span>
-            </div>
-            <div class="status-bar">
-                <label>Health</label>
-                <div class="bar-container">
-                    <div class="bar health-bar" id="healthBar"></div>
+                <div class="status-bar">
+                    <label>Attachment</label>
+                    <div class="bar-container">
+                        <div class="bar attachment-bar" id="attachmentBar"></div>
+                    </div>
+                    <span class="status-value" id="attachmentValue">50</span>
                 </div>
-                <span class="status-value" id="healthValue">100</span>
-            </div>
-            <div class="status-bar">
-                <label>Energy</label>
-                <div class="bar-container">
-                    <div class="bar energy-bar" id="energyBar"></div>
+                <div class="status-bar">
+                    <label>Aggression</label>
+                    <div class="bar-container">
+                        <div class="bar aggression-bar" id="aggressionBar"></div>
+                    </div>
+                    <span class="status-value" id="aggressionValue">0</span>
                 </div>
-                <span class="status-value" id="energyValue">100</span>
+                <div class="status-bar">
+                    <label>Social Anxiety</label>
+                    <div class="bar-container">
+                        <div class="bar anxiety-bar" id="anxietyBar"></div>
+                    </div>
+                    <span class="status-value" id="anxietyValue">20</span>
+                </div>
             </div>
         </div>
 
@@ -53,6 +81,10 @@
                         <div class="eye right-eye" id="rightEye"></div>
                         <div class="mouth" id="mouth"></div>
                     </div>
+                    <!-- Thought bubble for internal processing -->
+                    <div class="thought-bubble" id="thoughtBubble" style="display: none;">
+                        <div class="thought-content" id="thoughtContent"></div>
+                    </div>
                 </div>
             </div>
             
@@ -60,39 +92,107 @@
             <div class="interaction-effects" id="interactionEffects"></div>
         </div>
 
-        <!-- Chat Interface -->
+        <!-- Enhanced Chat Interface -->
         <div class="chat-panel">
             <div class="chat-history" id="chatHistory"></div>
+            
+            <!-- Context Display -->
+            <div class="context-display" id="contextDisplay">
+                <span class="current-mood" id="currentMood">Mood: Curious</span>
+                <span class="social-context" id="socialContext">Context: Getting to know you</span>
+                <span class="learning-focus" id="learningFocus">Learning: Names and relationships</span>
+            </div>
+            
             <div class="chat-input-container">
-                <input type="text" id="chatInput" placeholder="Type to your pet..." maxlength="100">
+                <input type="text" id="chatInput" placeholder="Talk to your pet..." maxlength="200">
                 <button id="voiceButton" class="voice-btn" title="Hold to speak">🎤</button>
                 <button id="sendButton" class="send-btn">Send</button>
             </div>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Enhanced Action Buttons -->
         <div class="action-panel">
-            <button class="action-btn" id="feedBtn">🍎 Feed</button>
-            <button class="action-btn" id="playBtn">🎾 Play</button>
-            <button class="action-btn" id="sleepBtn">😴 Sleep</button>
-            <button class="action-btn" id="medicineBtn">💊 Medicine</button>
+            <div class="basic-actions">
+                <h4>Basic Care</h4>
+                <button class="action-btn" id="feedBtn">🍎 Feed</button>
+                <button class="action-btn" id="playBtn">🎾 Play</button>
+                <button class="action-btn" id="sleepBtn">😴 Sleep</button>
+                <button class="action-btn" id="medicineBtn">💊 Medicine</button>
+            </div>
+            
+            <div class="social-actions">
+                <h4>Social Interaction</h4>
+                <button class="action-btn" id="gentlePetBtn">🤲 Gentle Pet</button>
+                <button class="action-btn" id="praiseBtn">👏 Praise</button>
+                <button class="action-btn" id="scoldBtn">❌ Scold</button>
+                <button class="action-btn" id="ignoreBtn">🚪 Ignore (5min)</button>
+                <button class="action-btn" id="introduceBtn">👋 Meet Someone New</button>
+            </div>
+            
+            <div class="system-actions">
+                <h4>System</h4>
+                <button class="action-btn" id="debugBtn">🔍 Debug Mind</button>
+                <button class="action-btn danger-btn" id="resetBtn">🔄 Reset</button>
+            </div>
         </div>
 
-        <!-- Info Display -->
+        <!-- Enhanced Info Display -->
         <div class="info-panel">
             <div class="creature-info">
-                <span>Age: <span id="creatureAge">0</span> days</span>
-                <span>Stage: <span id="evolutionStage">Mimicking</span></span>
-                <span>Name: <span id="creatureName">Unnamed</span></span>
+                <div class="basic-info">
+                    <span>Age: <span id="creatureAge">0</span> days</span>
+                    <span>Language Stage: <span id="evolutionStage">Babbling</span></span>
+                    <span>Name: <span id="creatureName">Unnamed</span></span>
+                </div>
+                
+                <!-- New cognitive status display -->
+                <div class="cognitive-info">
+                    <span>Known People: <span id="knownPeopleCount">0</span></span>
+                    <span>Vocabulary Size: <span id="vocabularySize">0</span></span>
+                    <span>Concepts Learned: <span id="conceptsLearned">0</span></span>
+                    <span>Your Pet Name: <span id="userPetName">Unknown</span></span>
+                </div>
+                
+                <!-- Relationship display -->
+                <div class="relationship-info">
+                    <h4>What I Call You</h4>
+                    <div id="relationshipDisplay">Getting to know you...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Debug Panel (toggleable) -->
+        <div class="debug-panel" id="debugPanel" style="display: none;">
+            <div class="debug-content">
+                <h3>Creature's Mind Debug</h3>
+                <div class="debug-section">
+                    <h4>Current Thoughts</h4>
+                    <div id="currentThoughts">No active thoughts</div>
+                </div>
+                <div class="debug-section">
+                    <h4>Entity Recognition</h4>
+                    <div id="entityStatus">No entities recognized</div>
+                </div>
+                <div class="debug-section">
+                    <h4>Recent Learning</h4>
+                    <div id="recentLearning">No recent learning events</div>
+                </div>
+                <div class="debug-section">
+                    <h4>Hypotheses Being Tested</h4>
+                    <div id="activeHypotheses">No active hypotheses</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Scripts - New order for dependencies -->
+    <script src="scripts/entity-manager.js"></script>
+    <script src="scripts/conceptual-memory.js"></script>
+    <script src="scripts/cognitive-processor.js"></script>
     <script src="scripts/storage-manager.js"></script>
     <script src="scripts/creature.js"></script>
     <script src="scripts/needs-system.js"></script>
-    <script src="scripts/language-learning.js"></script>
+    <script src="scripts/advanced-language-learning.js"></script>
     <script src="scripts/audio-system.js"></script>
     <script src="scripts/interaction-handler.js"></script>
     <script src="scripts/main.js"></script>

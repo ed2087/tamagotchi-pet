@@ -1,197 +1,402 @@
-/* Creature Base Styling */
+/* Enhanced Creature Styling */
 .creature {
     position: relative;
-    width: 120px;
-    height: 120px;
-    transition: all 0.3s ease;
+    width: 140px;
+    height: 140px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
 }
 
 .creature-body {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #00b894 100%);
     border-radius: 50%;
     position: relative;
     box-shadow: 
-        0 4px 15px rgba(0, 0, 0, 0.2),
-        inset 0 2px 5px rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
+        0 8px 25px rgba(0, 0, 0, 0.2),
+        inset 0 4px 8px rgba(255, 255, 255, 0.3),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
+    overflow: hidden;
 }
 
-/* Creature Face - ORIGINAL POSITIONING */
+.creature-body::before {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 15%;
+    width: 30%;
+    height: 30%;
+    background: radial-gradient(circle, 
+        rgba(255, 255, 255, 0.4) 0%, 
+        rgba(255, 255, 255, 0.1) 50%, 
+        transparent 100%
+    );
+    border-radius: 50%;
+    animation: glisten 3s ease-in-out infinite;
+}
+
+@keyframes glisten {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+/* Enhanced Face */
 .creature-face {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80%;
-    height: 60%;
+    width: 85%;
+    height: 70%;
 }
 
-/* Eyes - ORIGINAL POSITIONING, just better visibility */
+/* Enhanced Eyes */
 .eye {
     position: absolute;
-    width: 12px;  /* Back to original size */
-    height: 12px; /* Back to original size */
-    background: #1a1a1a; /* Darker for visibility */
-    border: 1px solid #ffffff; /* Thin white border */
+    width: 16px;
+    height: 16px;
+    background: radial-gradient(circle, #1a1a1a 60%, #333 100%);
+    border: 2px solid rgba(255, 255, 255, 0.8);
     border-radius: 50%;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5);
 }
 
-.left-eye {
-    top: 20%;    /* ORIGINAL POSITION */
-    left: 25%;   /* ORIGINAL POSITION */
-}
-
-.right-eye {
-    top: 20%;    /* ORIGINAL POSITION */
-    right: 25%;  /* ORIGINAL POSITION */
-}
-
-/* Eye states */
-.eye.blink {
-    height: 2px;
-    border-radius: 2px;
-}
-
-.eye.sleepy {
-    height: 6px;
-    opacity: 0.7;
-}
-
-.eye.angry {
-    background: #ffffff;
-    border-color: #d63031;
-    transform: rotate(-15deg);
-}
-
-.eye.happy {
-    background: #1a1a1a;
-    border-color: #00b894;
-    transform: scale(1.2);
-}
-
-/* Mouth - ORIGINAL POSITIONING, just better visibility */
-.mouth {
+.eye::after {
+    content: '';
     position: absolute;
-    bottom: 30%;  /* ORIGINAL POSITION */
-    left: 50%;    /* ORIGINAL POSITION */
-    transform: translateX(-50%);
-    width: 20px;  /* ORIGINAL SIZE */
-    height: 10px; /* ORIGINAL SIZE */
-    border: 2px solid #1a1a1a; /* Darker border for visibility */
-    background: rgba(255, 255, 255, 0.8); /* White background for contrast */
-    border-top: none;
-    border-radius: 0 0 20px 20px;
+    top: 2px;
+    left: 3px;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
     transition: all 0.3s ease;
 }
 
-/* Mouth expressions */
+.left-eye {
+    top: 25%;
+    left: 28%;
+}
+
+.right-eye {
+    top: 25%;
+    right: 28%;
+}
+
+/* Enhanced Eye States */
+.eye.blink {
+    height: 3px;
+    border-radius: 8px;
+    background: #1a1a1a;
+}
+
+.eye.blink::after {
+    opacity: 0;
+}
+
+.eye.sleepy {
+    height: 8px;
+    opacity: 0.7;
+    transform: rotate(-5deg);
+}
+
+.eye.angry {
+    background: radial-gradient(circle, #d63031 60%, #a71e1e 100%);
+    border-color: #ffffff;
+    transform: rotate(-15deg) scale(1.1);
+    animation: angryPulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes angryPulse {
+    0% { box-shadow: 0 0 5px rgba(214, 48, 49, 0.5); }
+    100% { box-shadow: 0 0 15px rgba(214, 48, 49, 0.8); }
+}
+
+.eye.happy {
+    transform: scale(1.2);
+    border-color: #00b894;
+    animation: happyTwinkle 2s ease-in-out infinite;
+}
+
+@keyframes happyTwinkle {
+    0%, 100% { 
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    }
+    50% { 
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 2px rgba(255, 255, 255, 0.5),
+                    0 0 10px rgba(0, 184, 148, 0.6);
+    }
+}
+
+/* Enhanced Mouth */
+.mouth {
+    position: absolute;
+    bottom: 35%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 12px;
+    border: 3px solid #1a1a1a;
+    background: linear-gradient(to bottom, 
+        rgba(255, 255, 255, 0.9) 0%, 
+        rgba(255, 192, 203, 0.8) 100%
+    );
+    border-top: none;
+    border-radius: 0 0 24px 24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.1),
+        0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced Mouth Expressions */
 .mouth.happy {
-    border-color: #1a1a1a;
-    background: rgba(255, 255, 255, 0.9);
-    width: 25px;  /* ORIGINAL SIZE */
-    height: 12px; /* ORIGINAL SIZE */
+    border-color: #00b894;
+    background: linear-gradient(to bottom, 
+        rgba(255, 255, 255, 0.9) 0%, 
+        rgba(255, 223, 186, 0.9) 100%
+    );
+    width: 30px;
+    height: 15px;
+    animation: smile 2s ease-in-out infinite;
+}
+
+@keyframes smile {
+    0%, 100% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.05); }
 }
 
 .mouth.sad {
     border-bottom: none;
-    border-top: 2px solid #1a1a1a;
-    border-radius: 20px 20px 0 0;
+    border-top: 3px solid #636e72;
+    border-radius: 24px 24px 0 0;
     transform: translateX(-50%) rotate(180deg);
-    background: rgba(255, 255, 255, 0.8);
+    background: linear-gradient(to bottom, 
+        rgba(255, 255, 255, 0.7) 0%, 
+        rgba(200, 200, 200, 0.8) 100%
+    );
+    width: 20px;
+    height: 10px;
 }
 
 .mouth.angry {
     border-color: #d63031;
-    background: rgba(255, 255, 255, 0.8);
-    width: 15px;  /* ORIGINAL SIZE */
-    height: 8px;  /* ORIGINAL SIZE */
+    background: linear-gradient(to bottom, 
+        rgba(255, 100, 100, 0.8) 0%, 
+        rgba(200, 50, 50, 0.9) 100%
+    );
+    width: 18px;
+    height: 8px;
+    animation: growl 1s ease-in-out infinite;
+}
+
+@keyframes growl {
+    0%, 100% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(0.9) rotate(-2deg); }
 }
 
 .mouth.speaking {
-    animation: speak 0.3s ease-in-out infinite alternate;
-    border-color: #1a1a1a;
-    background: rgba(255, 255, 255, 0.9);
+    animation: speak 0.4s ease-in-out infinite alternate;
+    border-color: #0984e3;
+    background: linear-gradient(to bottom, 
+        rgba(255, 255, 255, 0.9) 0%, 
+        rgba(116, 185, 255, 0.3) 100%
+    );
+    box-shadow: 0 0 10px rgba(116, 185, 255, 0.5);
 }
 
-/* Creature Mood States - More subtle colors */
+@keyframes speak {
+    0% { 
+        width: 24px; 
+        height: 12px; 
+        border-radius: 0 0 24px 24px; 
+    }
+    100% { 
+        width: 20px; 
+        height: 8px; 
+        border-radius: 0 0 20px 20px; 
+    }
+}
+
+/* Enhanced Mood States */
 .creature.happy .creature-body {
-    background: linear-gradient(135deg, #81ecec, #00b894);
-    animation: bounce 1s ease-in-out infinite alternate;
+    background: linear-gradient(135deg, #81ecec 0%, #00b894 50%, #55efc4 100%);
+    animation: bounce 1.5s ease-in-out infinite alternate;
+    box-shadow: 
+        0 8px 25px rgba(0, 184, 148, 0.3),
+        inset 0 4px 8px rgba(255, 255, 255, 0.4),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes bounce {
+    0% { transform: scale(1) translateY(0px); }
+    100% { transform: scale(1.05) translateY(-5px); }
 }
 
 .creature.sad .creature-body {
-    background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+    background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 50%, #5f4dee 100%);
     transform: scale(0.9);
+    opacity: 0.8;
+    animation: droop 3s ease-in-out infinite;
+}
+
+@keyframes droop {
+    0%, 100% { transform: scale(0.9) translateY(0px); }
+    50% { transform: scale(0.85) translateY(3px); }
 }
 
 .creature.angry .creature-body {
-    background: linear-gradient(135deg, #fd79a8, #e84393);
-    animation: shake 0.5s ease-in-out infinite;
+    background: linear-gradient(135deg, #fd79a8 0%, #e84393 50%, #d63031 100%);
+    animation: shake 0.4s ease-in-out infinite;
+    box-shadow: 
+        0 8px 25px rgba(232, 67, 147, 0.4),
+        inset 0 4px 8px rgba(255, 255, 255, 0.2),
+        0 0 20px rgba(214, 48, 49, 0.3);
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0px) rotate(0deg); }
+    25% { transform: translateX(-2px) rotate(-1deg); }
+    75% { transform: translateX(2px) rotate(1deg); }
 }
 
 .creature.hungry .creature-body {
-    background: linear-gradient(135deg, #fdcb6e, #f39c12);
-    animation: wobble 2s ease-in-out infinite;
+    background: linear-gradient(135deg, #fdcb6e 0%, #f39c12 50%, #e67e22 100%);
+    animation: wobble 2.5s ease-in-out infinite;
+    box-shadow: 
+        0 8px 25px rgba(243, 156, 18, 0.3),
+        inset 0 4px 8px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes wobble {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-3deg); }
+    75% { transform: rotate(3deg); }
 }
 
 .creature.sleepy .creature-body {
-    background: linear-gradient(135deg, #b2bec3, #636e72);
-    opacity: 0.8;
-    animation: breathe 3s ease-in-out infinite;
+    background: linear-gradient(135deg, #b2bec3 0%, #636e72 50%, #2d3436 100%);
+    opacity: 0.7;
+    animation: breathe 4s ease-in-out infinite;
+}
+
+@keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
 }
 
 .creature.sick .creature-body {
-    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+    background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 50%, #34495e 100%);
     animation: shiver 0.8s ease-in-out infinite;
-    opacity: 0.7;
+    opacity: 0.6;
+    filter: hue-rotate(180deg);
 }
 
-.creature.dead .creature-body {
-    background: #2d3436;
-    transform: rotate(90deg) scale(0.8);
-    opacity: 0.5;
+@keyframes shiver {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(0.98) rotate(-0.5deg); }
+    75% { transform: scale(1.02) rotate(0.5deg); }
 }
 
 /* Interaction Effects */
-.interaction-effects {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    overflow: hidden;
+.creature:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.3));
 }
 
-.heart-effect {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    color: #e84393;
-    font-size: 20px;
-    animation: floatUp 2s ease-out forwards;
-    pointer-events: none;
-}
-
-.sparkle-effect {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: #fdcb6e;
-    border-radius: 50%;
-    animation: sparkle 1s ease-out forwards;
-    pointer-events: none;
-}
-
-/* Hover Effects */
-.creature-stage:hover .creature {
-    transform: scale(1.05);
-}
-
-.creature-stage:active .creature {
+.creature:active {
     transform: scale(0.95);
+    transition: all 0.1s ease;
+}
+
+/* Special Effects */
+.creature.praised::after {
+    content: '✨';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    animation: sparkleFloat 2s ease-out forwards;
+    pointer-events: none;
+    z-index: 10;
+}
+
+@keyframes sparkleFloat {
+    0% { 
+        opacity: 1; 
+        transform: translateX(-50%) translateY(0px) scale(1); 
+    }
+    100% { 
+        opacity: 0; 
+        transform: translateX(-50%) translateY(-30px) scale(1.5); 
+    }
+}
+
+.creature.loved::before {
+    content: '💖';
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    font-size: 24px;
+    animation: heartBeat 1s ease-in-out infinite;
+    z-index: 10;
+}
+
+@keyframes heartBeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* Particle Effects */
+.creature.excited::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(255, 223, 0, 0.6) 2px, transparent 2px),
+        radial-gradient(circle at 80% 30%, rgba(255, 105, 180, 0.6) 2px, transparent 2px),
+        radial-gradient(circle at 30% 80%, rgba(0, 255, 127, 0.6) 2px, transparent 2px),
+        radial-gradient(circle at 70% 70%, rgba(255, 165, 0, 0.6) 2px, transparent 2px);
+    animation: particleFloat 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes particleFloat {
+    0%, 100% { 
+        opacity: 0; 
+        transform: rotate(0deg) scale(0); 
+    }
+    50% { 
+        opacity: 1; 
+        transform: rotate(180deg) scale(1); 
+    }
+}
+
+/* Responsive creature sizing */
+@media (max-width: 768px) {
+    .creature {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .eye {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .mouth {
+        width: 20px;
+        height: 10px;
+    }
 }
