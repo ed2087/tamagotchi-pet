@@ -1,3 +1,35 @@
+/* CSS Custom Properties */
+:root {
+    /* Color Palette */
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --success-color: #00b894;
+    --warning-color: #fdcb6e;
+    --error-color: #e17055;
+    
+    /* Glass Morphism Effects */
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    --glass-blur: blur(10px);
+    
+    /* Layout Constants */
+    --card-radius: 20px;
+    --button-radius: 15px;
+    --small-radius: 10px;
+    --touch-target: 44px;
+    --gap: 15px;
+    
+    /* Typography */
+    --font-size-xs: 12px;
+    --font-size-sm: 14px;
+    --font-size-base: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+}
+
+/* Reset & Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -5,233 +37,468 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    background: var(--primary-gradient);
     min-height: 100vh;
+    color: white;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* === MOBILE FIRST - COLUMN STACKING === */
+.game-container {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    min-height: 100vh;
+    gap: var(--gap);
+    padding: var(--gap);
+}
+
+/* Mobile Creature Stage - Top Priority */
+.creature-stage {
+    order: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #333;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--card-radius);
+    box-shadow: var(--glass-shadow);
+    min-height: 300px;
+    position: relative;
+    overflow: hidden;
+    padding: 30px 20px;
 }
 
-.game-container {
-    display: grid;
-    grid-template-areas: 
-        "status creature info"
-        "actions creature chat";
-    grid-template-columns: 200px 1fr 300px;
-    grid-template-rows: auto 1fr;
-    gap: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    width: 90vw;
-    max-width: 1000px;
-    height: 80vh;
+/* Mobile Status Panel */
+.left-sidebar {
+    order: 2;
 }
 
-/* Status Panel */
 .status-panel {
-    grid-area: status;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--card-radius);
+    box-shadow: var(--glass-shadow);
+    padding: 20px;
+    margin-bottom: var(--gap);
+}
+
+.basic-needs,
+.emotional-needs {
+    margin-bottom: 25px;
+}
+
+.basic-needs:last-child,
+.emotional-needs:last-child {
+    margin-bottom: 0;
+}
+
+.basic-needs h3,
+.emotional-needs h3 {
+    font-size: var(--font-size-lg);
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .status-bar {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--button-radius);
+    transition: all 0.3s ease;
+}
+
+.status-bar:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateX(5px);
+}
+
+.status-bar:last-child {
+    margin-bottom: 0;
 }
 
 .status-bar label {
-    display: block;
-    font-size: 12px;
-    font-weight: bold;
-    margin-bottom: 5px;
+    font-size: var(--font-size-sm);
     color: white;
+    font-weight: 600;
+    min-width: 80px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .bar-container {
+    flex: 1;
+    height: 12px;
     background: rgba(0, 0, 0, 0.3);
-    height: 8px;
-    border-radius: 4px;
+    border-radius: 6px;
     overflow: hidden;
-    margin-bottom: 5px;
+    margin: 0 15px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .bar {
     height: 100%;
-    border-radius: 4px;
-    transition: width 0.3s ease, background-color 0.3s ease;
-    width: 100%;
+    border-radius: 6px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
-
-.hunger-bar { background: linear-gradient(90deg, #ff9a56, #ff6b35); }
-.happiness-bar { background: linear-gradient(90deg, #ffeaa7, #fdcb6e); }
-.health-bar { background: linear-gradient(90deg, #55a3ff, #003d82); }
-.energy-bar { background: linear-gradient(90deg, #a8e6cf, #56ab91); }
 
 .status-value {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.8);
-    float: right;
-}
-
-/* Creature Stage */
-.creature-stage {
-    grid-area: creature;
-    position: relative;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    overflow: hidden;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Chat Panel */
-.chat-panel {
-    grid-area: chat;
-    display: flex;
-    flex-direction: column;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    overflow: hidden;
-}
-
-.chat-history {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-    max-height: 200px;
-}
-
-.chat-input-container {
-    display: flex;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-#chatInput {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.9);
-    border: none;
-    border-radius: 20px;
-    padding: 8px 15px;
-    margin-right: 5px;
-    outline: none;
-}
-
-.voice-btn, .send-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
     color: white;
-    cursor: pointer;
-    margin-left: 5px;
-    transition: all 0.2s ease;
+    min-width: 35px;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 8px;
+    border-radius: 8px;
 }
 
-.voice-btn:hover, .send-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
-}
-
-.voice-btn:active {
-    background: #ff6b6b;
-    transform: scale(0.95);
-}
-
-/* Action Panel */
+/* Mobile Action Panel */
 .action-panel {
-    grid-area: actions;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--card-radius);
+    box-shadow: var(--glass-shadow);
+    padding: 20px;
+}
+
+.basic-actions,
+.social-actions,
+.system-actions {
+    margin-bottom: 25px;
+}
+
+.basic-actions:last-child,
+.social-actions:last-child,
+.system-actions:last-child {
+    margin-bottom: 0;
+}
+
+.basic-actions h4,
+.social-actions h4,
+.system-actions h4 {
+    font-size: var(--font-size-base);
+    color: white;
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .action-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    min-height: var(--touch-target);
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--button-radius);
     color: white;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    text-align: left;
+    gap: 12px;
 }
 
 .action-btn:hover {
     background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 .action-btn:active {
-    transform: translateY(0);
+    transform: scale(0.98);
 }
 
-/* Info Panel */
+.action-btn:last-child {
+    margin-bottom: 0;
+}
+
+.action-btn.danger-btn {
+    background: rgba(231, 112, 85, 0.3);
+    border-color: rgba(231, 112, 85, 0.5);
+}
+
+.action-btn.danger-btn:hover {
+    background: rgba(231, 112, 85, 0.5);
+}
+
+/* Mobile Info Panel */
+.right-sidebar {
+    order: 3;
+}
+
 .info-panel {
-    grid-area: info;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 15px;
-    align-self: start;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--card-radius);
+    box-shadow: var(--glass-shadow);
+    padding: 20px;
+    margin-bottom: var(--gap);
 }
 
 .creature-info {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 20px;
     color: white;
-    font-size: 13px;
+}
+
+.basic-info,
+.cognitive-info,
+.relationship-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.relationship-info h4 {
+    color: white;
+    font-size: var(--font-size-base);
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .creature-info span {
     background: rgba(255, 255, 255, 0.1);
-    padding: 5px 10px;
-    border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 16px;
+    border-radius: var(--small-radius);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+.creature-info span:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+}
+
+#relationshipDisplay {
+    background: var(--secondary-gradient);
+    padding: 15px;
+    border-radius: var(--small-radius);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-style: italic;
+    text-align: center;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+}
+
+/* Mobile Chat Panel */
+.chat-panel {
+    order: 4;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--card-radius);
+    box-shadow: var(--glass-shadow);
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+    overflow: hidden;
+}
+
+/* Status Bar Colors */
+.hunger-bar { background: linear-gradient(90deg, #ff9a56, #ff6b35); }
+.health-bar { background: linear-gradient(90deg, #ff7675, #e17055); }
+.energy-bar { background: linear-gradient(90deg, #74b9ff, #0984e3); }
+.trust-bar { background: linear-gradient(90deg, #fd79a8, #e84393); }
+.attachment-bar { background: linear-gradient(90deg, #fdcb6e, #f39c12); }
+.aggression-bar { background: linear-gradient(90deg, #d63031, #a71e1e); }
+.anxiety-bar { background: linear-gradient(90deg, #a29bfe, #6c5ce7); }
+
+/* === DESKTOP LAYOUT (1024px+) - 30/40/30 === */
+@media (min-width: 1024px) {
     .game-container {
-        grid-template-areas: 
-            "creature"
-            "status"
-            "actions"
-            "chat"
-            "info";
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto auto auto;
-        width: 95vw;
-        height: auto;
-        max-height: none;
+        display: grid;
+        grid-template-areas: "left-sidebar creature-stage right-sidebar"
+                           "chat-panel chat-panel chat-panel";
+        grid-template-columns: 30% 40% 30%;
+        grid-template-rows: 1fr 280px;
+        height: 100vh;
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: var(--gap);
+        gap: var(--gap);
     }
-    
-    .status-panel {
-        flex-direction: row;
-        overflow-x: auto;
+
+    /* Desktop Left Sidebar */
+    .left-sidebar {
+        grid-area: left-sidebar;
+        display: flex;
+        flex-direction: column;
+        gap: var(--gap);
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+        order: unset;
     }
-    
-    .action-panel {
-        flex-direction: row;
+
+    .left-sidebar::-webkit-scrollbar {
+        width: 6px;
     }
-    
+
+    .left-sidebar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .left-sidebar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 3px;
+    }
+
+    /* Desktop Creature Stage */
     .creature-stage {
-        min-height: 300px;
+        grid-area: creature-stage;
+        min-height: unset;
+        padding: 40px 30px;
+        order: unset;
     }
+
+    /* Desktop Right Sidebar */
+    .right-sidebar {
+        grid-area: right-sidebar;
+        display: flex;
+        flex-direction: column;
+        gap: var(--gap);
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+        order: unset;
+    }
+
+    .right-sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .right-sidebar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .right-sidebar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 3px;
+    }
+
+    /* Desktop Chat Panel */
+    .chat-panel {
+        grid-area: chat-panel;
+        height: unset;
+        order: unset;
+    }
+
+    /* Desktop Action Buttons - Stacked */
+    .action-btn {
+        justify-content: flex-start;
+        text-align: left;
+        gap: 15px;
+        padding: 18px 25px;
+        font-size: var(--font-size-base);
+    }
+
+    /* Desktop Status Bars */
+    .status-bar {
+        padding: 18px 25px;
+    }
+
+    .status-bar label {
+        font-size: var(--font-size-base);
+        min-width: 100px;
+    }
+
+    .bar-container {
+        height: 14px;
+        margin: 0 20px;
+    }
+
+    .status-value {
+        font-size: var(--font-size-base);
+        min-width: 40px;
+        padding: 6px 10px;
+    }
+
+    .basic-needs h3,
+    .emotional-needs h3 {
+        font-size: var(--font-size-xl);
+    }
+
+    .basic-actions h4,
+    .social-actions h4,
+    .system-actions h4 {
+        font-size: var(--font-size-lg);
+    }
+
+    /* Desktop Info Panel */
+    .creature-info span {
+        font-size: var(--font-size-base);
+        padding: 15px 20px;
+    }
+
+    #relationshipDisplay {
+        font-size: var(--font-size-base);
+        padding: 18px;
+    }
+
+    .relationship-info h4 {
+        font-size: var(--font-size-lg);
+    }
+}
+
+/* Animations */
+@keyframes gentlePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Performance Optimizations */
+.gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Focus states for accessibility */
+.action-btn:focus,
+.status-bar:focus {
+    outline: 2px solid rgba(116, 185, 255, 0.6);
+    outline-offset: 2px;
 }

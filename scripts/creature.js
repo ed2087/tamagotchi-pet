@@ -1,7 +1,7 @@
 // Enhanced Creature class - integrates with advanced cognitive architecture
 class Creature {
     constructor() {
-        // Basic identity
+        // Basic identity generateMoodBasedThought()
         this.name = '';
         this.age = 0; // in hours
         this.birthTime = Date.now();

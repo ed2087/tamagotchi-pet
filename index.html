@@ -11,63 +11,92 @@
 </head>
 <body>
     <div class="game-container">
-        <!-- Enhanced Status Bars -->
-        <div class="status-panel">
-            <div class="basic-needs">
-                <h3>Physical Needs</h3>
-                <div class="status-bar">
-                    <label>Hunger</label>
-                    <div class="bar-container">
-                        <div class="bar hunger-bar" id="hungerBar"></div>
+        <!-- Left Sidebar -->
+        <div class="left-sidebar">
+            <!-- Enhanced Status Bars -->
+            <div class="status-panel">
+                <div class="basic-needs">
+                    <h3>Physical Needs</h3>
+                    <div class="status-bar">
+                        <label>Hunger</label>
+                        <div class="bar-container">
+                            <div class="bar hunger-bar" id="hungerBar"></div>
+                        </div>
+                        <span class="status-value" id="hungerValue">100</span>
                     </div>
-                    <span class="status-value" id="hungerValue">100</span>
+                    <div class="status-bar">
+                        <label>Health</label>
+                        <div class="bar-container">
+                            <div class="bar health-bar" id="healthBar"></div>
+                        </div>
+                        <span class="status-value" id="healthValue">100</span>
+                    </div>
+                    <div class="status-bar">
+                        <label>Energy</label>
+                        <div class="bar-container">
+                            <div class="bar energy-bar" id="energyBar"></div>
+                        </div>
+                        <span class="status-value" id="energyValue">100</span>
+                    </div>
                 </div>
-                <div class="status-bar">
-                    <label>Health</label>
-                    <div class="bar-container">
-                        <div class="bar health-bar" id="healthBar"></div>
+
+                <!-- New Emotional/Social Status -->
+                <div class="emotional-needs">
+                    <h3>Emotional State</h3>
+                    <div class="status-bar">
+                        <label>Trust</label>
+                        <div class="bar-container">
+                            <div class="bar trust-bar" id="trustBar"></div>
+                        </div>
+                        <span class="status-value" id="trustValue">50</span>
                     </div>
-                    <span class="status-value" id="healthValue">100</span>
-                </div>
-                <div class="status-bar">
-                    <label>Energy</label>
-                    <div class="bar-container">
-                        <div class="bar energy-bar" id="energyBar"></div>
+                    <div class="status-bar">
+                        <label>Attachment</label>
+                        <div class="bar-container">
+                            <div class="bar attachment-bar" id="attachmentBar"></div>
+                        </div>
+                        <span class="status-value" id="attachmentValue">50</span>
                     </div>
-                    <span class="status-value" id="energyValue">100</span>
+                    <div class="status-bar">
+                        <label>Aggression</label>
+                        <div class="bar-container">
+                            <div class="bar aggression-bar" id="aggressionBar"></div>
+                        </div>
+                        <span class="status-value" id="aggressionValue">0</span>
+                    </div>
+                    <div class="status-bar">
+                        <label>Social Anxiety</label>
+                        <div class="bar-container">
+                            <div class="bar anxiety-bar" id="anxietyBar"></div>
+                        </div>
+                        <span class="status-value" id="anxietyValue">20</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- New Emotional/Social Status -->
-            <div class="emotional-needs">
-                <h3>Emotional State</h3>
-                <div class="status-bar">
-                    <label>Trust</label>
-                    <div class="bar-container">
-                        <div class="bar trust-bar" id="trustBar"></div>
-                    </div>
-                    <span class="status-value" id="trustValue">50</span>
+            <!-- Enhanced Action Buttons -->
+            <div class="action-panel">
+                <div class="basic-actions">
+                    <h4>Basic Care</h4>
+                    <button class="action-btn" id="feedBtn">🍎 Feed</button>
+                    <button class="action-btn" id="playBtn">🎾 Play</button>
+                    <button class="action-btn" id="sleepBtn">😴 Sleep</button>
+                    <button class="action-btn" id="medicineBtn">💊 Medicine</button>
                 </div>
-                <div class="status-bar">
-                    <label>Attachment</label>
-                    <div class="bar-container">
-                        <div class="bar attachment-bar" id="attachmentBar"></div>
-                    </div>
-                    <span class="status-value" id="attachmentValue">50</span>
+                
+                <div class="social-actions">
+                    <h4>Social Interaction</h4>
+                    <button class="action-btn" id="gentlePetBtn">🤲 Gentle Pet</button>
+                    <button class="action-btn" id="praiseBtn">👏 Praise</button>
+                    <button class="action-btn" id="scoldBtn">❌ Scold</button>
+                    <button class="action-btn" id="ignoreBtn">🚪 Ignore (5min)</button>
+                    <button class="action-btn" id="introduceBtn">👋 Meet Someone New</button>
                 </div>
-                <div class="status-bar">
-                    <label>Aggression</label>
-                    <div class="bar-container">
-                        <div class="bar aggression-bar" id="aggressionBar"></div>
-                    </div>
-                    <span class="status-value" id="aggressionValue">0</span>
-                </div>
-                <div class="status-bar">
-                    <label>Social Anxiety</label>
-                    <div class="bar-container">
-                        <div class="bar anxiety-bar" id="anxietyBar"></div>
-                    </div>
-                    <span class="status-value" id="anxietyValue">20</span>
+                
+                <div class="system-actions">
+                    <h4>System</h4>
+                    <button class="action-btn" id="debugBtn">🔍 Debug Mind</button>
+                    <button class="action-btn danger-btn" id="resetBtn">🔄 Reset</button>
                 </div>
             </div>
         </div>
@@ -92,7 +121,35 @@
             <div class="interaction-effects" id="interactionEffects"></div>
         </div>
 
-        <!-- Enhanced Chat Interface -->
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <!-- Enhanced Info Display -->
+            <div class="info-panel">
+                <div class="creature-info">
+                    <div class="basic-info">
+                        <span>Age: <span id="creatureAge">0</span> days</span>
+                        <span>Language Stage: <span id="evolutionStage">Babbling</span></span>
+                        <span>Name: <span id="creatureName">Unnamed</span></span>
+                    </div>
+                    
+                    <!-- New cognitive status display -->
+                    <div class="cognitive-info">
+                        <span>Known People: <span id="knownPeopleCount">0</span></span>
+                        <span>Vocabulary Size: <span id="vocabularySize">0</span></span>
+                        <span>Concepts Learned: <span id="conceptsLearned">0</span></span>
+                        <!-- <span>Your Pet Name: <span id="userPetName">Unknown</span></span> -->
+                    </div>
+                    
+                    <!-- Relationship display -->
+                    <div class="relationship-info">
+                        <h4>What I Call You</h4>
+                        <div id="relationshipDisplay">Getting to know you...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Chat Interface - Bottom Full Width -->
         <div class="chat-panel">
             <div class="chat-history" id="chatHistory"></div>
             
@@ -107,57 +164,6 @@
                 <input type="text" id="chatInput" placeholder="Talk to your pet..." maxlength="200">
                 <button id="voiceButton" class="voice-btn" title="Hold to speak">🎤</button>
                 <button id="sendButton" class="send-btn">Send</button>
-            </div>
-        </div>
-
-        <!-- Enhanced Action Buttons -->
-        <div class="action-panel">
-            <div class="basic-actions">
-                <h4>Basic Care</h4>
-                <button class="action-btn" id="feedBtn">🍎 Feed</button>
-                <button class="action-btn" id="playBtn">🎾 Play</button>
-                <button class="action-btn" id="sleepBtn">😴 Sleep</button>
-                <button class="action-btn" id="medicineBtn">💊 Medicine</button>
-            </div>
-            
-            <div class="social-actions">
-                <h4>Social Interaction</h4>
-                <button class="action-btn" id="gentlePetBtn">🤲 Gentle Pet</button>
-                <button class="action-btn" id="praiseBtn">👏 Praise</button>
-                <button class="action-btn" id="scoldBtn">❌ Scold</button>
-                <button class="action-btn" id="ignoreBtn">🚪 Ignore (5min)</button>
-                <button class="action-btn" id="introduceBtn">👋 Meet Someone New</button>
-            </div>
-            
-            <div class="system-actions">
-                <h4>System</h4>
-                <button class="action-btn" id="debugBtn">🔍 Debug Mind</button>
-                <button class="action-btn danger-btn" id="resetBtn">🔄 Reset</button>
-            </div>
-        </div>
-
-        <!-- Enhanced Info Display -->
-        <div class="info-panel">
-            <div class="creature-info">
-                <div class="basic-info">
-                    <span>Age: <span id="creatureAge">0</span> days</span>
-                    <span>Language Stage: <span id="evolutionStage">Babbling</span></span>
-                    <span>Name: <span id="creatureName">Unnamed</span></span>
-                </div>
-                
-                <!-- New cognitive status display -->
-                <div class="cognitive-info">
-                    <span>Known People: <span id="knownPeopleCount">0</span></span>
-                    <span>Vocabulary Size: <span id="vocabularySize">0</span></span>
-                    <span>Concepts Learned: <span id="conceptsLearned">0</span></span>
-                    <span>Your Pet Name: <span id="userPetName">Unknown</span></span>
-                </div>
-                
-                <!-- Relationship display -->
-                <div class="relationship-info">
-                    <h4>What I Call You</h4>
-                    <div id="relationshipDisplay">Getting to know you...</div>
-                </div>
             </div>
         </div>
 

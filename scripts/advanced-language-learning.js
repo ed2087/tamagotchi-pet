@@ -35,7 +35,10 @@ class AdvancedLanguageLearning {
         // Processing state
         this.currentlyProcessing = false;
         this.lastSpeechTime = 0;
-        this.speechCooldown = 2000;
+        // Random between 20s and 40s
+        this.speechCooldown = 10000 + Math.floor(Math.random() * 20000);
+
+
         
         this.init();
     }
